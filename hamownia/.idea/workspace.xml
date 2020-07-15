@@ -21,13 +21,19 @@
   <component name="ChangeListManager">
     <list default="true" id="0bab8dbe-2e7b-47b8-b94e-00a6ba5f079c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainwindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -43,6 +49,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.mainwindow">
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -108,11 +115,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="hamownia" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/venv" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/venv/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.mainwindow" />
-        <item itemvalue="Python.main" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -139,6 +168,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="141" y="32" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594671944423">
@@ -149,46 +179,50 @@
       <screen x="0" y="28" width="1366" height="692" />
     </state>
     <state x="345" y="28" width="666" height="692" key="#main/0.28.1366.692@0.28.1366.692" timestamp="1594671762928" />
-    <state x="100" y="128" width="1166" height="492" key="DiffContextDialog" timestamp="1594741001515">
+    <state x="100" y="128" width="1166" height="492" key="DiffContextDialog" timestamp="1594843356052">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state x="100" y="128" width="1166" height="492" key="DiffContextDialog/0.28.1366.692@0.28.1366.692" timestamp="1594741001515" />
+    <state x="100" y="128" width="1166" height="492" key="DiffContextDialog/0.28.1366.692@0.28.1366.692" timestamp="1594843356052" />
     <state x="466" y="132" width="424" height="485" key="FileChooserDialogImpl" timestamp="1594671637799">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
     <state x="466" y="132" width="424" height="485" key="FileChooserDialogImpl/0.28.1366.692@0.28.1366.692" timestamp="1594671637799" />
-    <state width="1343" height="198" key="GridCell.Tab.0.bottom" timestamp="1594746275277">
+    <state width="1343" height="198" key="GridCell.Tab.0.bottom" timestamp="1594844940270">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.0.bottom/0.28.1366.692@0.28.1366.692" timestamp="1594746275277" />
-    <state width="1343" height="198" key="GridCell.Tab.0.center" timestamp="1594746275276">
+    <state width="1343" height="198" key="GridCell.Tab.0.bottom/0.28.1366.692@0.28.1366.692" timestamp="1594844940270" />
+    <state width="1343" height="198" key="GridCell.Tab.0.center" timestamp="1594844940267">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.0.center/0.28.1366.692@0.28.1366.692" timestamp="1594746275276" />
-    <state width="1343" height="198" key="GridCell.Tab.0.left" timestamp="1594746275276">
+    <state width="1343" height="198" key="GridCell.Tab.0.center/0.28.1366.692@0.28.1366.692" timestamp="1594844940267" />
+    <state width="1343" height="198" key="GridCell.Tab.0.left" timestamp="1594844940267">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.0.left/0.28.1366.692@0.28.1366.692" timestamp="1594746275276" />
-    <state width="1343" height="198" key="GridCell.Tab.0.right" timestamp="1594746275276">
+    <state width="1343" height="198" key="GridCell.Tab.0.left/0.28.1366.692@0.28.1366.692" timestamp="1594844940267" />
+    <state width="1343" height="198" key="GridCell.Tab.0.right" timestamp="1594844940267">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.0.right/0.28.1366.692@0.28.1366.692" timestamp="1594746275276" />
-    <state width="1343" height="198" key="GridCell.Tab.1.bottom" timestamp="1594746275278">
+    <state width="1343" height="198" key="GridCell.Tab.0.right/0.28.1366.692@0.28.1366.692" timestamp="1594844940267" />
+    <state width="1343" height="198" key="GridCell.Tab.1.bottom" timestamp="1594844940271">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.1.bottom/0.28.1366.692@0.28.1366.692" timestamp="1594746275278" />
-    <state width="1343" height="198" key="GridCell.Tab.1.center" timestamp="1594746275277">
+    <state width="1343" height="198" key="GridCell.Tab.1.bottom/0.28.1366.692@0.28.1366.692" timestamp="1594844940271" />
+    <state width="1343" height="198" key="GridCell.Tab.1.center" timestamp="1594844940271">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.1.center/0.28.1366.692@0.28.1366.692" timestamp="1594746275277" />
-    <state width="1343" height="198" key="GridCell.Tab.1.left" timestamp="1594746275277">
+    <state width="1343" height="198" key="GridCell.Tab.1.center/0.28.1366.692@0.28.1366.692" timestamp="1594844940271" />
+    <state width="1343" height="198" key="GridCell.Tab.1.left" timestamp="1594844940271">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.1.left/0.28.1366.692@0.28.1366.692" timestamp="1594746275277" />
-    <state width="1343" height="198" key="GridCell.Tab.1.right" timestamp="1594746275277">
+    <state width="1343" height="198" key="GridCell.Tab.1.left/0.28.1366.692@0.28.1366.692" timestamp="1594844940271" />
+    <state width="1343" height="198" key="GridCell.Tab.1.right" timestamp="1594844940271">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
-    <state width="1343" height="198" key="GridCell.Tab.1.right/0.28.1366.692@0.28.1366.692" timestamp="1594746275277" />
+    <state width="1343" height="198" key="GridCell.Tab.1.right/0.28.1366.692@0.28.1366.692" timestamp="1594844940271" />
+    <state x="172" y="28" width="1012" height="692" key="SettingsEditor" timestamp="1594830421561">
+      <screen x="0" y="28" width="1366" height="692" />
+    </state>
+    <state x="172" y="28" width="1012" height="692" key="SettingsEditor/0.28.1366.692@0.28.1366.692" timestamp="1594830421561" />
     <state x="346" y="41" width="672" height="678" key="search.everywhere.popup" timestamp="1594740332642">
       <screen x="0" y="28" width="1366" height="692" />
     </state>
@@ -198,6 +232,12 @@
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="ipAddress" language="Python" />
+        <watch expression="UDP_port" language="Python" />
+        <watch expression="UDP_ip" language="Python" />
+        <watch expression="addr" language="Python" />
+        <watch expression="data" language="Python" />
+        <watch expression="localhost" language="Python" />
+        <watch expression="CLIENT_IP" language="Python" />
       </configuration>
     </watches-manager>
   </component>

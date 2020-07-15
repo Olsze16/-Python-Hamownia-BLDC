@@ -1,38 +1,41 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import socket
 
 #Private variables
 i=1
-sensor1=1.3243
-sensor2=1.3243
-sensor3=1.3243
+data_int = []
 #Private variables END
 
+
 def connectbutton_clicked():
-    global ip, port
-    ip=entryIP.get()
-    port=entryport.get()
+    global UDP_ip, UDP_port, soc
+    UDP_ip=entryIP.get()
+    UDP_port=int(entryport.get())
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
     welcomewindow.destroy()
     mainwindowwidget()
 def startbutton_clicked():
     global i
     i+=1
 def testbutton_clicked():
-    tk.messagebox.showerror(title="Connection test", message="STM32 not connected")
+    tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
     mainwindow = tk.Tk()
     mainwindow.configure(bg="#bdc3c7")
     mainwindow.title("BLDC")
     putlogo=tk.PhotoImage(file="put.png")
-    putlogolabel=tk.Label(mainwindow, image=putlogo, background="#bdc3c7", relief="solid").grid(row=1, column=2)
-    lbl = tk.Label(mainwindow,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
-    spacer=tk.Label(mainwindow, text="", bg="#bdc3c7").grid(row=2, column=2)
-    lbl2 =tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ ip +"\nPort:" + port, relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
+    tk.Label(mainwindow, image=putlogo, background="#bdc3c7", relief="solid").grid(row=1, column=2)
+    tk.Label(mainwindow,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
+    tk.Label(mainwindow, text="", bg="#bdc3c7").grid(row=2, column=2)
+    lbl2 =tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
 
     #Definicja stylu
-     # text
+    # text
     labelstyle = ttk.Style()
     labelstyle.configure("BW.TLabel", foreground="black",background="#bdc3c7", font=("Helvetica",10))
      #sub-def values real
@@ -60,18 +63,28 @@ def mainwindowwidget():
     #Konfiguracja wyświetlania pomiarów na żywo
     Sensorlabel=ttk.Label(mainwindow, text="Odczyt z sensorów:", style="BW.TLabel").grid(row=3, column=5,columnspan=2)
     sensor1lbl=ttk.Label(mainwindow,text="Sensor 1:", style="BW3.TLabel").grid(row=5, column=5)
-    valuesens1=ttk.Label(mainwindow,text=str(sensor1) + " [rpm]", style="BW2.TLabel").grid(row=5,column=6,sticky="E")
     sensor2lbl=ttk.Label(mainwindow,text="Sensor 2:", style="BW3.TLabel").grid(row=6, column=5)
-    valuesens2=ttk.Label(mainwindow,text=str(sensor2) + " [mA]", style="BW2.TLabel").grid(row=6,column=6,sticky="E")
     sensor3lbl=ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
-    valuesens3=ttk.Label(mainwindow,text=str(sensor3) + " [V]", style="BW2.TLabel").grid(row=7,column=6,sticky="E")
     sensor4lbl=ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
-    valuesens4=ttk.Label(mainwindow,text=str(sensor3) + " [V]", style="BW2.TLabel").grid(row=8,column=6,sticky="E")
     sensor5lbl=ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
-    valuesens5=ttk.Label(mainwindow,text=str(sensor3) + " [V]", style="BW2.TLabel").grid(row=9,column=6,sticky="E")
 
     mainwindow.resizable(0, 0)
-    mainwindow.mainloop()
+    while True:
+        global data_int
+        mainwindow.update_idletasks()
+        mainwindow.update()
+        try: #sprawdzenie czy socket dostaje dane
+            data = soc.recv(1024 * 10)
+            a_list = data.split()
+            map_object = map(int, a_list)
+            data_int = list(map_object)
+            ttk.Label(mainwindow, text=str(data_int[0]) + " [rpm]", style="BW2.TLabel").grid(row=5, column=6,sticky="E")
+            ttk.Label(mainwindow, text=str(data_int[1]) + " [mA]", style="BW2.TLabel").grid(row=6, column=6, sticky="E")
+            ttk.Label(mainwindow, text=str(data_int[2]) + " [V]", style="BW2.TLabel").grid(row=7, column=6, sticky="E")
+            ttk.Label(mainwindow, text=str(data_int[3]) + " [V]", style="BW2.TLabel").grid(row=8, column=6, sticky="E")
+            ttk.Label(mainwindow, text=str(data_int[4])+ " [V]", style="BW2.TLabel").grid(row=9, column=6, sticky="E")
+        except socket.error: #jezeli socket nie dostaje danych:
+            pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def welcomewindowwidget():
     global entryIP, entryport, welcomewindow
     welcomewindow = tk.Tk()
@@ -107,3 +120,4 @@ def welcomewindowwidget():
     welcomewindow.mainloop()
 
 welcomewindowwidget()
+
