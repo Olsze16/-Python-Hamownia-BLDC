@@ -2,12 +2,37 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import socket
-
+import numpy as np
+import matplotlib
+from matplotlib.figure import Figure
+matplotlib.use('TkAgg')
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 #Private variables
-i=1
+i=0
 data_int = []
+y = np.zeros(100)
+y1 = np.zeros(100)
+y2 = np.zeros(100)
+x = np.arange(0.0,10.0,0.1)
+fig = Figure(figsize=(7, 2), dpi=100)
+signal =0
+
 #Private variables END
 
+def rysuj_plot():
+    global i, x, y, fig, signal
+    y[i]=float(data_int[1])
+    y1[i]=float(data_int[2])
+    y2[i]=float(data_int[3])
+    i+=1
+    signal=0
+    if i==100:
+        i=0
+        signal=1
+        fig.add_subplot(131).plot(x, y)
+        fig.add_subplot(132).plot(x, y1)
+        fig.add_subplot(133).plot(x, y2)
+        return fig, signal
 
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc
@@ -68,9 +93,13 @@ def mainwindowwidget():
     sensor4lbl=ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
     sensor5lbl=ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
 
+    #radiobut do plota
+    ttk.Label(mainwindow, text="Wybierz wartość do plota:", style="BW.TLabel").grid(row=10, column=2)
+    comboExample = ttk.Combobox(mainwindow,values=["Sensor1","Sensor2","Sensor3","Sensor4"], width=10).grid(row=11, column=2)
+
     mainwindow.resizable(0, 0)
     while True:
-        global data_int
+        global data_int, i, fig, signal
         mainwindow.update_idletasks()
         mainwindow.update()
         try: #sprawdzenie czy socket dostaje dane
@@ -83,6 +112,11 @@ def mainwindowwidget():
             ttk.Label(mainwindow, text=str(data_int[2]) + " [V]", style="BW2.TLabel").grid(row=7, column=6, sticky="E")
             ttk.Label(mainwindow, text=str(data_int[3]) + " [V]", style="BW2.TLabel").grid(row=8, column=6, sticky="E")
             ttk.Label(mainwindow, text=str(data_int[4])+ " [V]", style="BW2.TLabel").grid(row=9, column=6, sticky="E")
+            rysuj_plot()
+            if signal==1:
+                canvas = FigureCanvasTkAgg(fig, master=mainwindow)  # A tk.DrawingArea.
+                canvas.draw()
+                canvas.get_tk_widget().grid(row=12, column=0, rowspan=2, columnspan=7)
         except socket.error: #jezeli socket nie dostaje danych:
             pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def welcomewindowwidget():
