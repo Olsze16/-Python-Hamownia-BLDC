@@ -4,35 +4,36 @@ from tkinter import messagebox
 import socket
 import numpy as np
 import matplotlib
-from matplotlib.figure import Figure
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from matplotlib import style
+
+style.use('seaborn')
 #Private variables
 i=0
-data_int = []
-y = np.zeros(100)
-y1 = np.zeros(100)
-y2 = np.zeros(100)
-x = np.arange(0.0,10.0,0.1)
-fig = Figure(figsize=(7, 2), dpi=100)
-signal =0
+data_int= []
+yt =[]
+xt = []
+yt1 = []
+fig = Figure(figsize=(7, 2), dpi=100, facecolor="#bdc3c7", tight_layout='1')
+ax = fig.add_subplot(111)
+ax.set_title("Sensor1", fontsize=5)
+ax.set_ylabel("Y", fontsize=5)
+ax.set_xlabel("X", fontsize=5)
+ax.tick_params(labelsize=10)
 
 #Private variables END
 
 def rysuj_plot():
-    global i, x, y, fig, signal
-    y[i]=float(data_int[1])
-    y1[i]=float(data_int[2])
-    y2[i]=float(data_int[3])
-    i+=1
+    global i, x, y, fig, signal, ax
+    #y[i]=float(data_int[1])
+    yt.append(float(data_int[1]))
+    xt.append(i)
+    i+=0.1
     signal=0
-    if i==100:
-        i=0
-        signal=1
-        fig.add_subplot(131).plot(x, y)
-        fig.add_subplot(132).plot(x, y1)
-        fig.add_subplot(133).plot(x, y2)
-        return fig, signal
+    ax.plot(xt,yt, color='r', linewidth='2')
 
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc
@@ -58,7 +59,6 @@ def mainwindowwidget():
     tk.Label(mainwindow,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
     tk.Label(mainwindow, text="", bg="#bdc3c7").grid(row=2, column=2)
     lbl2 =tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
-
     #Definicja stylu
     # text
     labelstyle = ttk.Style()
@@ -98,9 +98,11 @@ def mainwindowwidget():
     comboExample = ttk.Combobox(mainwindow,values=["Sensor1","Sensor2","Sensor3","Sensor4"], width=10).grid(row=11, column=2)
 
     mainwindow.resizable(0, 0)
+    canvas = FigureCanvasTkAgg(fig, master=mainwindow)  # A tk.DrawingArea.
+    canvas.get_tk_widget().grid(row=12, column=0, rowspan=2, columnspan=7)
     while True:
-        global data_int, i, fig, signal
-        mainwindow.update_idletasks()
+        global data_int, i, signal
+        #mainwindow.update_idletasks()
         mainwindow.update()
         try: #sprawdzenie czy socket dostaje dane
             data = soc.recv(1024 * 10)
@@ -113,10 +115,7 @@ def mainwindowwidget():
             ttk.Label(mainwindow, text=str(data_int[3]) + " [V]", style="BW2.TLabel").grid(row=8, column=6, sticky="E")
             ttk.Label(mainwindow, text=str(data_int[4])+ " [V]", style="BW2.TLabel").grid(row=9, column=6, sticky="E")
             rysuj_plot()
-            if signal==1:
-                canvas = FigureCanvasTkAgg(fig, master=mainwindow)  # A tk.DrawingArea.
-                canvas.draw()
-                canvas.get_tk_widget().grid(row=12, column=0, rowspan=2, columnspan=7)
+            canvas.draw()
         except socket.error: #jezeli socket nie dostaje danych:
             pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def welcomewindowwidget():
@@ -140,8 +139,10 @@ def welcomewindowwidget():
     ttk.Label(welcomewindow, style="BW.TLabel", text="Port :").grid(row=4, column=0)
     entryIP=ttk.Entry(welcomewindow)
     entryIP.grid(row=3, column=1)
+    entryIP.insert(0,"192.168.0.16")
     entryport=ttk.Entry(welcomewindow)
     entryport.grid(row=4,column=1)
+    entryport.insert(0,"20001")
     ttk.Button(welcomewindow,style="But1.TButton", text="connect",command=connectbutton_clicked).grid(row=5, column=0, columnspan=2)
 
 
