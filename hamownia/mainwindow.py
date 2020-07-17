@@ -2,39 +2,31 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import socket
-import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-from matplotlib import style
+from matplotlib import pyplot as plt
+from plotsensors import calculatesensors
 
-style.use('seaborn')
+plt.style.use('dark_background')
 #Private variables
 i=0
-data_int= []
-yt =[]
-xt = []
-yt1 = []
-fig = Figure(figsize=(7, 2), dpi=100, facecolor="#bdc3c7", tight_layout='1')
-ax = fig.add_subplot(111)
-ax.set_title("Sensor1", fontsize=5)
-ax.set_ylabel("Y", fontsize=5)
-ax.set_xlabel("X", fontsize=5)
-ax.tick_params(labelsize=10)
+data_int=[]
+x=[]
+y=[]
+y1=[]
+y2=[]
+y3=[]
+y4=[]
 
 #Private variables END
-
-def rysuj_plot():
-    global i, x, y, fig, signal, ax
-    #y[i]=float(data_int[1])
-    yt.append(float(data_int[1]))
-    xt.append(i)
-    i+=0.1
-    signal=0
-    ax.plot(xt,yt, color='r', linewidth='2')
-
+def showplot_clicked():
+    fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, sharex=True)
+    fig.suptitle('Aligning x-axis using sharex')
+    ax1.plot(x, y)
+    ax2.plot(x ,y1)
+    ax3.plot(x ,y2)
+    ax4.plot(x ,y3)
+    ax5.plot(x ,y4)
+    fig.show()
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc
     UDP_ip=entryIP.get()
@@ -64,14 +56,13 @@ def mainwindowwidget():
     labelstyle = ttk.Style()
     labelstyle.configure("BW.TLabel", foreground="black",background="#bdc3c7", font=("Helvetica",10))
      #sub-def values real
-    labelstyle1 = ttk.Style()
-    labelstyle1.configure("BW2.TLabel", foreground="red3",background="#bdc3c7", font=("Helvetica",10))
+    labelstyle.configure("BW2.TLabel", foreground="red3",background="#bdc3c7", font=("Helvetica",10))
     # sub-def sensor name
-    labelstyle2 = ttk.Style()
-    labelstyle2.configure("BW3.TLabel",background="#bdc3c7", font=("Helvetica",10))
+    labelstyle.configure("BW3.TLabel",background="#bdc3c7", font=("Helvetica",10))
     # sub-def middle button
     buttonstyle=ttk.Style()
     buttonstyle.configure("But1.TButton", background="#27ae60", height=1, width=15)
+    buttonstyle.configure("But2.TButton", background="blue", height=0.5, width=15)
 
     #Konfiguracja przycisków do obsługi stringów wysyłanych do STM32-F7
     sendlabel=ttk.Label(mainwindow, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
@@ -92,17 +83,10 @@ def mainwindowwidget():
     sensor3lbl=ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
     sensor4lbl=ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
     sensor5lbl=ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
-
-    #radiobut do plota
-    ttk.Label(mainwindow, text="Wybierz wartość do plota:", style="BW.TLabel").grid(row=10, column=2)
-    comboExample = ttk.Combobox(mainwindow,values=["Sensor1","Sensor2","Sensor3","Sensor4"], width=10).grid(row=11, column=2)
-
+    ttk.Button(mainwindow, text="Show plots", style="But2.TButton", command=showplot_clicked).grid(row=10,column=5,columnspan=2, sticky="E")
     mainwindow.resizable(0, 0)
-    canvas = FigureCanvasTkAgg(fig, master=mainwindow)  # A tk.DrawingArea.
-    canvas.get_tk_widget().grid(row=12, column=0, rowspan=2, columnspan=7)
     while True:
-        global data_int, i, signal
-        #mainwindow.update_idletasks()
+        global data_int, i
         mainwindow.update()
         try: #sprawdzenie czy socket dostaje dane
             data = soc.recv(1024 * 10)
@@ -114,8 +98,8 @@ def mainwindowwidget():
             ttk.Label(mainwindow, text=str(data_int[2]) + " [V]", style="BW2.TLabel").grid(row=7, column=6, sticky="E")
             ttk.Label(mainwindow, text=str(data_int[3]) + " [V]", style="BW2.TLabel").grid(row=8, column=6, sticky="E")
             ttk.Label(mainwindow, text=str(data_int[4])+ " [V]", style="BW2.TLabel").grid(row=9, column=6, sticky="E")
-            rysuj_plot()
-            canvas.draw()
+            calculatesensors(i, x, y, y1, y2, y3, y4, data_int)
+            i += 0.1
         except socket.error: #jezeli socket nie dostaje danych:
             pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def welcomewindowwidget():
