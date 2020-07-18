@@ -1,10 +1,11 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
+from tkinter import ttk
 import socket
 import matplotlib
 from matplotlib import pyplot as plt
 from plotsensors import calculatesensors
+import styledef
 
 plt.style.use('dark_background')
 #Private variables
@@ -44,45 +45,34 @@ def testbutton_clicked():
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
     mainwindow = tk.Tk()
+    styledef.mainwindowstyle()
     mainwindow.configure(bg="#bdc3c7")
     mainwindow.title("BLDC")
     putlogo=tk.PhotoImage(file="put.png")
     tk.Label(mainwindow, image=putlogo, background="#bdc3c7", relief="solid").grid(row=1, column=2)
     tk.Label(mainwindow,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
     tk.Label(mainwindow, text="", bg="#bdc3c7").grid(row=2, column=2)
-    lbl2 =tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
-    #Definicja stylu
-    # text
-    labelstyle = ttk.Style()
-    labelstyle.configure("BW.TLabel", foreground="black",background="#bdc3c7", font=("Helvetica",10))
-     #sub-def values real
-    labelstyle.configure("BW2.TLabel", foreground="red3",background="#bdc3c7", font=("Helvetica",10))
-    # sub-def sensor name
-    labelstyle.configure("BW3.TLabel",background="#bdc3c7", font=("Helvetica",10))
-    # sub-def middle button
-    buttonstyle=ttk.Style()
-    buttonstyle.configure("But1.TButton", background="#27ae60", height=1, width=15)
-    buttonstyle.configure("But2.TButton", background="blue", height=0.5, width=15)
+    tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
 
     #Konfiguracja przycisków do obsługi stringów wysyłanych do STM32-F7
-    sendlabel=ttk.Label(mainwindow, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
-    startbutton=ttk.Button(mainwindow,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
-    stopbutton=ttk.Button(mainwindow,text="Stop BLDC", style="But1.TButton").grid(row=6,column=2)
-    testbutton=ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
+    ttk.Label(mainwindow, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
+    ttk.Button(mainwindow,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
+    ttk.Button(mainwindow,text="Stop BLDC", style="But1.TButton").grid(row=6,column=2)
+    ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
-    Gaussianlabel=ttk.Label(mainwindow, text="Gaussian windows:", style="BW.TLabel").grid(row=3, column=0)
-    sensor1button=tk.Button(mainwindow,text="Sensor 1 FFT", width=15, height=1).grid(row=5, column=0)
-    sensor2button=tk.Button(mainwindow,text="Sensor 2 FFT", width=15, height=1).grid(row=6, column=0)
-    sensor3button=tk.Button(mainwindow,text="Sensor 3 FFT", width=15, height=1).grid(row=7, column=0)
+    ttk.Label(mainwindow, text="Gaussian windows:", style="BW.TLabel").grid(row=3, column=0)
+    tk.Button(mainwindow,text="Sensor 1 FFT", width=15, height=1).grid(row=5, column=0)
+    tk.Button(mainwindow,text="Sensor 2 FFT", width=15, height=1).grid(row=6, column=0)
+    tk.Button(mainwindow,text="Sensor 3 FFT", width=15, height=1).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
-    Sensorlabel=ttk.Label(mainwindow, text="Odczyt z sensorów:", style="BW.TLabel").grid(row=3, column=5,columnspan=2)
-    sensor1lbl=ttk.Label(mainwindow,text="Sensor 1:", style="BW3.TLabel").grid(row=5, column=5)
-    sensor2lbl=ttk.Label(mainwindow,text="Sensor 2:", style="BW3.TLabel").grid(row=6, column=5)
-    sensor3lbl=ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
-    sensor4lbl=ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
-    sensor5lbl=ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
+    ttk.Label(mainwindow, text="Odczyt z sensorów:", style="BW.TLabel").grid(row=3, column=5,columnspan=2)
+    ttk.Label(mainwindow,text="Sensor 1:", style="BW3.TLabel").grid(row=5, column=5)
+    ttk.Label(mainwindow,text="Sensor 2:", style="BW3.TLabel").grid(row=6, column=5)
+    ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
+    ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
+    ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
     ttk.Button(mainwindow, text="Show plots", style="But2.TButton", command=showplot_clicked).grid(row=10,column=5,columnspan=2, sticky="E")
     mainwindow.resizable(0, 0)
     while True:
@@ -105,16 +95,11 @@ def mainwindowwidget():
 def welcomewindowwidget():
     global entryIP, entryport, welcomewindow
     welcomewindow = tk.Tk()
-    #Definicja stylu
-    labelstyle = ttk.Style()
-    labelstyle.configure("BW.TLabel", foreground="black",background="#bdc3c7", font=("Helvetica",10))
-    labelstyle.configure("BW1.TLabel", foreground="black",background="#bdc3c7", font=("Helvetica",7))
-    buttonstyle=ttk.Style()
-    buttonstyle.configure("But1.TButton", background="#27ae60", height=1, width=15)
+    styledef.welcomnewindowstyle()
     welcomewindow.title("Praca inżynierska - stanowisko pomiarowe BLDC")
     welcomewindow.configure(bg="#bdc3c7")
     putlogo1=tk.PhotoImage(file="put.png")
-    tk.Label(welcomewindow, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=0, columnspan=2)
+    tk.Label(master=welcomewindow, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=0, columnspan=2)
     ttk.Label(welcomewindow, style="BW.TLabel", text="Automatyczne stanowisko pomiarowe \nwraz z analizą czasowo-częstotliwościową do badań \nwysokoobrotowych silników elektrycznych małych mocy.",justify = "center").grid(row=0, column=0, columnspan=2)
     ttk.Label(welcomewindow, style="BW.TLabel", text="Skonfiguruj połączenie z STM32:").grid(row=2, column=0,columnspan=2)
 
