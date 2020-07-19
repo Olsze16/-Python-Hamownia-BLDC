@@ -4,30 +4,111 @@ from tkinter import ttk
 import socket
 import matplotlib
 from matplotlib import pyplot as plt
-from plotsensors import calculatesensors
+from plotsensors import calculatesensors, updateplots
+import matplotlib.animation as animation
 import styledef
 
 plt.style.use('dark_background')
 #Private variables
 i=0
 data_int=[]
+sensorsread=False
 x=[]
 y=[]
-y1=[]
-y2=[]
-y3=[]
-y4=[]
+
 
 #Private variables END
-def showplot_clicked():
-    fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, sharex=True)
-    fig.suptitle('Aligning x-axis using sharex')
-    ax1.plot(x, y)
-    ax2.plot(x ,y1)
-    ax3.plot(x ,y2)
-    ax4.plot(x ,y3)
-    ax5.plot(x ,y4)
-    fig.show()
+def showplottest_clicked():
+    x_len = 200  # Number of points to display
+    y_range = [0, 85]  # Range of possible Y values to display
+    fig, (ax,ax1, ax2, ax3, ax4) = plt.subplots(nrows=5, sharex=True)
+    ax.set_ylabel("[mA]")
+    ax1.set_ylabel("[V]")
+    ax2.set_ylabel("[rpm]")
+    ax3.set_ylabel("oC]")
+    ax4.set_ylabel("[g]")
+    xs = list(range(0, 200))
+    ys = [0] * x_len
+    ys1 = [0] * x_len
+    ys2 = [0] * x_len
+    ys3 = [0] * x_len
+    ys4 = [0] * x_len
+    ax.set_ylim(y_range)
+    ax1.set_ylim(y_range)
+    ax2.set_ylim(y_range)
+    ax3.set_ylim(y_range)
+    ax4.set_ylim(y_range)
+    line, = ax.plot(xs, ys)
+    line1, = ax1.plot(xs, ys1)
+    line2, = ax2.plot(xs, ys2)
+    line3, = ax3.plot(xs, ys3)
+    line4, = ax4.plot(xs, ys4)
+
+    plt.xlabel('Samples')
+
+    def animate(i, ys, ys1, ys2, ys3, ys4):
+        try:  # sprawdzenie czy socket dostaje dane
+            dataplot = soc.recv(1024 * 10)
+            a_list = dataplot.split()
+            map_object = map(int, a_list)
+            data_intplot = list(map_object)
+            ys.append(float(data_intplot[0]))
+            ys1.append(float(data_intplot[1]))
+            ys2.append(float(data_intplot[2]))
+            ys3.append(float(data_intplot[3]))
+            ys4.append(float(data_intplot[4]))
+            ys = ys[-x_len:]
+            ys1 = ys1[-x_len:]
+            ys2 = ys2[-x_len:]
+            ys3 = ys3[-x_len:]
+            ys4 = ys4[-x_len:]
+            line.set_ydata(ys)
+            line1.set_ydata(ys1)
+            line2.set_ydata(ys2)
+            line3.set_ydata(ys3)
+            line4.set_ydata(ys4)
+            return line, line1, line2, line3, line4,
+        except socket.error:  # jezeli socket nie dostaje danych:
+            ys.append(float(0))
+            ys1.append(float(0))
+            ys2.append(float(0))
+            ys3.append(float(0))
+            ys4.append(float(0))
+            ys = ys[-x_len:]
+            ys1 = ys1[-x_len:]
+            ys2 = ys2[-x_len:]
+            ys3 = ys3[-x_len:]
+            ys4 = ys4[-x_len:]
+            line.set_ydata(ys)
+            line1.set_ydata(ys1)
+            line2.set_ydata(ys2)
+            line3.set_ydata(ys3)
+            line4.set_ydata(ys4)
+            return line, line1, line2, line3, line4,
+            pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
+    ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True)
+    plt.show()
+def changesensorsvar():
+    global sensorsread
+    sensorsread = not sensorsread
+    return sensorsread
+def receivedata():
+    global data_int, ax
+    mainwindow.update()
+    try: #sprawdzenie czy socket dostaje dane
+        data = soc.recv(1024 * 10)
+        a_list = data.split()
+        map_object = map(int, a_list)
+        data_int = list(map_object)
+        current.set(str(data_int[0]) + str(" [mA]"))
+        voltage.set(str(data_int[1]) + str(" [V]"))
+        rpm.set(str(data_int[2]) + str(" [rpm]"))
+        temp.set(str(data_int[3]) + str(" [C]"))
+        ciag.set(str(data_int[4]) +str(" [g]"))
+    except socket.error: #jezeli socket nie dostaje danych:
+        pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
+def gauss1():
+    import gauss
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc
     UDP_ip=entryIP.get()
@@ -44,6 +125,7 @@ def testbutton_clicked():
     tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
+    global mainwindow
     mainwindow = tk.Tk()
     styledef.mainwindowstyle()
     mainwindow.configure(bg="#bdc3c7")
@@ -62,36 +144,35 @@ def mainwindowwidget():
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
     ttk.Label(mainwindow, text="Gaussian windows:", style="BW.TLabel").grid(row=3, column=0)
-    tk.Button(mainwindow,text="Sensor 1 FFT", width=15, height=1).grid(row=5, column=0)
+    tk.Button(mainwindow,text="Sensor 1 FFT", width=15, height=1, command = gauss1).grid(row=5, column=0)
     tk.Button(mainwindow,text="Sensor 2 FFT", width=15, height=1).grid(row=6, column=0)
     tk.Button(mainwindow,text="Sensor 3 FFT", width=15, height=1).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
-    ttk.Label(mainwindow, text="Odczyt z sensorów:", style="BW.TLabel").grid(row=3, column=5,columnspan=2)
+    tk.Checkbutton(mainwindow, text="Show sensors:", command=changesensorsvar).grid(row=4,column=5,columnspan=2)
     ttk.Label(mainwindow,text="Sensor 1:", style="BW3.TLabel").grid(row=5, column=5)
     ttk.Label(mainwindow,text="Sensor 2:", style="BW3.TLabel").grid(row=6, column=5)
     ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
     ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
     ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
-    ttk.Button(mainwindow, text="Show plots", style="But2.TButton", command=showplot_clicked).grid(row=10,column=5,columnspan=2, sticky="E")
+    ttk.Button(mainwindow, text="Show plots", style="But2.TButton", command=showplottest_clicked).grid(row=10,column=5,columnspan=2, sticky="E")
+    global current, voltage, rpm, temp, ciag
+    current=tk.StringVar()
+    voltage=tk.StringVar()
+    rpm=tk.StringVar()
+    temp=tk.StringVar()
+    ciag=tk.StringVar()
+    ttk.Label(mainwindow, textvariable=current, style="BW2.TLabel").grid(row=5, column=6, sticky="E")
+    ttk.Label(mainwindow, textvariable=voltage, style="BW2.TLabel").grid(row=6, column=6, sticky="E")
+    ttk.Label(mainwindow, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
+    ttk.Label(mainwindow, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
+    ttk.Label(mainwindow, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
     mainwindow.resizable(0, 0)
     while True:
-        global data_int, i
         mainwindow.update()
-        try: #sprawdzenie czy socket dostaje dane
-            data = soc.recv(1024 * 10)
-            a_list = data.split()
-            map_object = map(int, a_list)
-            data_int = list(map_object)
-            ttk.Label(mainwindow, text=str(data_int[0]) + " [rpm]", style="BW2.TLabel").grid(row=5, column=6,sticky="E")
-            ttk.Label(mainwindow, text=str(data_int[1]) + " [mA]", style="BW2.TLabel").grid(row=6, column=6, sticky="E")
-            ttk.Label(mainwindow, text=str(data_int[2]) + " [V]", style="BW2.TLabel").grid(row=7, column=6, sticky="E")
-            ttk.Label(mainwindow, text=str(data_int[3]) + " [V]", style="BW2.TLabel").grid(row=8, column=6, sticky="E")
-            ttk.Label(mainwindow, text=str(data_int[4])+ " [V]", style="BW2.TLabel").grid(row=9, column=6, sticky="E")
-            calculatesensors(i, x, y, y1, y2, y3, y4, data_int)
-            i += 0.1
-        except socket.error: #jezeli socket nie dostaje danych:
-            pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
+        if (sensorsread==True):
+            receivedata()
+
 def welcomewindowwidget():
     global entryIP, entryport, welcomewindow
     welcomewindow = tk.Tk()
