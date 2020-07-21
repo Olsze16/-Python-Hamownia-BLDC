@@ -8,7 +8,6 @@ from plotsensors import calculatesensors, updateplots
 import matplotlib.animation as animation
 import styledef
 import time
-from PIL import ImageTk
 
 plt.style.use('dark_background')
 #Private variables
