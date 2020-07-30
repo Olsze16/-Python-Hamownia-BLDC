@@ -18,6 +18,7 @@ dynamicplot=False
 x=[]
 y=[]
 ping =0.1
+rpmset=25
 
 
 #Private variables END
@@ -28,12 +29,11 @@ def dynamicplotbox():
 def showplottest_clicked():
     if (dynamicplot==True):
         x_len = 200  # Number of points to display
-        y_range = [0, 35]  # Range of possible Y values to display
         fig, (ax,ax1, ax2, ax3, ax4) = plt.subplots(nrows=5, sharex=True)
-        ax.set_ylabel("[mA]")
+        ax.set_ylabel("[A]")
         ax1.set_ylabel("[V]")
         ax2.set_ylabel("[rpm]")
-        ax3.set_ylabel("oC]")
+        ax3.set_ylabel("[oC]")
         ax4.set_ylabel("[g]")
         xs = list(range(0, 200))
         ys = [0] * x_len
@@ -41,11 +41,11 @@ def showplottest_clicked():
         ys2 = [0] * x_len
         ys3 = [0] * x_len
         ys4 = [0] * x_len
-        ax.set_ylim(y_range)
-        ax1.set_ylim(y_range)
-        ax2.set_ylim(y_range)
-        ax3.set_ylim(y_range)
-        ax4.set_ylim(y_range)
+        ax.set_ylim([0,10]) #Zakres Amper na wykresie
+        ax1.set_ylim([0,15]) #Zakres Voltage na wykresie
+        ax2.set_ylim([0,6000]) #Zakres rpm na wykresie
+        ax3.set_ylim(0,40) #zakres temp na wykresie
+        ax4.set_ylim(0,200) #zakres ciag na wykresie
         line, = ax.plot(xs, ys)
         line1, = ax1.plot(xs, ys1)
         line2, = ax2.plot(xs, ys2)
@@ -56,7 +56,7 @@ def showplottest_clicked():
 
         def animate(i, ys, ys1, ys2, ys3, ys4):
             try:  # sprawdzenie czy socket dostaje dane
-                dataplot = soc.recv(27)
+                dataplot = soc.recv(25)
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -66,7 +66,7 @@ def showplottest_clicked():
                 ys3.append(float(data_intplot[3]))
                 ys4.append(float(data_intplot[4]))
                 if(sensorsread==True):
-                    current.set(str(data_intplot[0]) + str(" [mA]"))
+                    current.set(str(data_intplot[0]) + str(" [A]"))
                     voltage.set(str(data_intplot[1]) + str(" [V]"))
                     rpm.set(str(data_intplot[2]) + str(" [rpm]"))
                     temp.set(str(data_intplot[3]) + str(" [C]"))
@@ -89,7 +89,7 @@ def showplottest_clicked():
                 ys3.append(float(0))
                 ys4.append(float(0))
                 if(sensorsread==True):
-                    current.set(str("0") + str(" [mA]"))
+                    current.set(str("0") + str(" [A]"))
                     voltage.set(str("0") + str(" [V]"))
                     rpm.set(str("0") + str(" [rpm]"))
                     temp.set(str("0") + str(" [C]"))
@@ -106,10 +106,10 @@ def showplottest_clicked():
                 line4.set_ydata(ys4)
                 return line, line1, line2, line3, line4,
                 pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
-        ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=85,blit=True)
+        ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True)
         plt.show()
     elif(sensorsread==True and dynamicplot==False):
-        current.set(str("0") + str(" [mA]"))
+        current.set(str("0") + str(" [A]"))
         voltage.set(str("0") + str(" [V]"))
         rpm.set(str("0") + str(" [rpm]"))
         temp.set(str("0") + str(" [C]"))
@@ -124,20 +124,23 @@ def receivedata():
     mainwindow.update()
     time.sleep(ping)
     try: #sprawdzenie czy socket dostaje dane
-        dataplot = soc.recv(27)
+        dataplot = soc.recv(25)
         print(dataplot)
         a_list = dataplot.split()
         map_object = map(float, a_list)
         data_intplot = list(map_object)
-        current.set(str(data_intplot[0]) + str(" [mA]"))
+        current.set(str(data_intplot[0]) + str(" [A]"))
         voltage.set(str(data_intplot[1]) + str(" [V]"))
         rpm.set(str(data_intplot[2]) + str(" [rpm]"))
         temp.set(str(data_intplot[3]) + str(" [C]"))
         ciag.set(str(data_intplot[4]) +str(" [g]"))
     except socket.error: #jezeli socket nie dostaje danych:
         pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
-def gauss1():
-    import gauss
+def startreczny_clicked():
+    global rpmset
+    rpmsetbyes = "3 " + str(rpmset)
+    soc.sendto(bytes(rpmsetbyes, "utf-8"),(servIP, servPORT))
+    showplottest_clicked()
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc, servIP, servPORT
     UDP_ip=entryIP.get()
@@ -155,6 +158,9 @@ def startbutton_clicked():
     showplottest_clicked()
     print("Gruba jazdeczka")
     i+=1
+
+def stopbutton_clicked():
+    soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
 def testbutton_clicked():
     tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
 def mainwindowwidget():
@@ -176,14 +182,17 @@ def mainwindowwidget():
     ttk.Separator(mainwindow).grid(row=10, column=0, columnspan=7, ipadx=400)
     ttk.Button(mainwindow,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
     tk.Checkbutton(mainwindow, text="Show dynamic plots\n during test:",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11, column=2)
-    ttk.Button(mainwindow,text="Stop BLDC", style="But1.TButton").grid(row=6,column=2)
+    ttk.Button(mainwindow,text="Stop BLDC", style="But1.TButton", command=stopbutton_clicked).grid(row=6,column=2)
     ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
-    ttk.Label(mainwindow, text="Gaussian windows:", style="BW.TLabel").grid(row=3, column=0)
-    tk.Button(mainwindow,text="Sensor 1 FFT", width=15, height=1, command = gauss1).grid(row=5, column=0)
-    tk.Button(mainwindow,text="Sensor 2 FFT", width=15, height=1).grid(row=6, column=0)
-    tk.Button(mainwindow,text="Sensor 3 FFT", width=15, height=1).grid(row=7, column=0)
+    global rpmset
+    ttk.Label(mainwindow, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
+    ttk.Label(mainwindow, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
+    scale=tk.Scale(mainwindow, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
+    scale.grid(row=6, column=0)
+    rpmset = scale.get()
+    ttk.Button(mainwindow,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
     ttk.Label(mainwindow, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
