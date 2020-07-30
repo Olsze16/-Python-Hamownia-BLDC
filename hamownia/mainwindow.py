@@ -15,9 +15,10 @@ i=0
 data_int=[]
 sensorsread=False
 dynamicplot=False
+reczny=False
 x=[]
 y=[]
-ping =0.1
+ping =0.001
 rpmset=25
 
 
@@ -65,6 +66,10 @@ def showplottest_clicked():
                 ys2.append(float(data_intplot[2]))
                 ys3.append(float(data_intplot[3]))
                 ys4.append(float(data_intplot[4]))
+                if reczny == True:
+                    rpmset = scale.get()
+                    rpmsetbyes = "3 " + str(rpmset)
+                    soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
                 if(sensorsread==True):
                     current.set(str(data_intplot[0]) + str(" [A]"))
                     voltage.set(str(data_intplot[1]) + str(" [V]"))
@@ -115,6 +120,10 @@ def showplottest_clicked():
         temp.set(str("0") + str(" [C]"))
         ciag.set(str("0") + str(" [g]"))
         while(sensorsread==True):
+            if reczny==True:
+                rpmset = scale.get()
+                rpmsetbyes = "3 " + str(rpmset)
+                soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
             receivedata()
 def changesensorsvar():
     global sensorsread
@@ -137,7 +146,9 @@ def receivedata():
     except socket.error: #jezeli socket nie dostaje danych:
         pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def startreczny_clicked():
-    global rpmset
+    global rpmset, reczny
+    reczny=True
+    rpmset = scale.get()
     rpmsetbyes = "3 " + str(rpmset)
     soc.sendto(bytes(rpmsetbyes, "utf-8"),(servIP, servPORT))
     showplottest_clicked()
@@ -158,9 +169,10 @@ def startbutton_clicked():
     showplottest_clicked()
     print("Gruba jazdeczka")
     i+=1
-
 def stopbutton_clicked():
+    global reczny
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
+    reczny=False
 def testbutton_clicked():
     tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
 def mainwindowwidget():
@@ -186,12 +198,11 @@ def mainwindowwidget():
     ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
-    global rpmset
+    global rpmset, scale
     ttk.Label(mainwindow, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(mainwindow, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
     scale=tk.Scale(mainwindow, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
     scale.grid(row=6, column=0)
-    rpmset = scale.get()
     ttk.Button(mainwindow,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
