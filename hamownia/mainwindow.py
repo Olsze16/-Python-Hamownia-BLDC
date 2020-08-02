@@ -8,12 +8,17 @@ from plotsensors import calculatesensors, updateplots
 import matplotlib.animation as animation
 import styledef
 import time
+import numpy as np
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.figure import Figure
 
 plt.style.use('dark_background')
 #Private variables
 i=0
 data_int=[]
 sensorsread=False
+fftread=False
 dynamicplot=False
 reczny=False
 x=[]
@@ -23,6 +28,47 @@ rpmset=25
 
 
 #Private variables END
+def testwithfft():
+    global i
+    fft = np.zeros(255, dtype=float)
+    fft1 = np.zeros(255, dtype=float)
+    fft2 = np.zeros(255, dtype=float)
+    freq = np.arange(start=0, stop=255, step=1)
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(311)
+    ax1 = fig.add_subplot(312)
+    ax2 = fig.add_subplot(313)
+    line1, = ax.plot(freq, fft)
+    line2, = ax1.plot(freq, fft1)
+    line3, = ax2.plot(freq, fft2)
+    while(fftread==True):
+        mainwindow.update()
+        try:
+            dataplot = soc.recv(36)
+            a_list = dataplot.split()
+            map_object = map(float, a_list)
+            data_intplot = list(map_object)
+            print(dataplot)
+            if i==255:
+                print(dataplot)
+                i=0
+                ax1.cla()
+                ax.cla()
+                ax2.cla()
+                line1, = ax.plot(freq, fft)
+                line2, = ax1.plot(freq, fft1)
+                line3, = ax2.plot(freq, fft2)
+                ax.set_ylim([0, 2])
+                ax1.set_ylim([0, 2])
+                ax2.set_ylim([0, 2])
+                fig.canvas.draw()
+            fft[i]=data_intplot[0]
+            fft1[i]=data_intplot[1]
+            fft2[i]=data_intplot[2]
+            i+=1
+        except:
+            pass #elobenc
 def dynamicplotbox():
     global dynamicplot
     dynamicplot = not dynamicplot
@@ -129,6 +175,10 @@ def changesensorsvar():
     global sensorsread
     sensorsread = not sensorsread
     return sensorsread
+def fftbuttonvar():
+    global fftread
+    fftread = not fftread
+    return fftread
 def receivedata():
     mainwindow.update()
     time.sleep(ping)
@@ -165,14 +215,21 @@ def connectbutton_clicked():
     mainwindowwidget()
 def startbutton_clicked():
     global i
-    soc.sendto(bytes("1",  "utf-8"), (servIP, servPORT))
-    showplottest_clicked()
-    print("Gruba jazdeczka")
-    i+=1
+    if(fftread==True):
+        soc.sendto(bytes("4",  "utf-8"), (servIP, servPORT))
+        testwithfft()
+        i+=1
+    else:
+        soc.sendto(bytes("1",  "utf-8"), (servIP, servPORT))
+        showplottest_clicked()
+        i+=1
 def stopbutton_clicked():
-    global reczny
+    global reczny, fftBUT, fftread
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
     reczny=False
+    fftBUT.deselect()
+    fftread=False
+    mainwindow.update()
 def testbutton_clicked():
     tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
 def mainwindowwidget():
@@ -194,11 +251,11 @@ def mainwindowwidget():
     ttk.Separator(mainwindow).grid(row=10, column=0, columnspan=7, ipadx=400)
     ttk.Button(mainwindow,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
     tk.Checkbutton(mainwindow, text="Show dynamic plots\n during test:",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11, column=2)
-    ttk.Button(mainwindow,text="Stop BLDC", style="But1.TButton", command=stopbutton_clicked).grid(row=6,column=2)
+    ttk.Button(mainwindow,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
     ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
-    global rpmset, scale
+    global rpmset, scale, fftBUT
     ttk.Label(mainwindow, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(mainwindow, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
     scale=tk.Scale(mainwindow, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
@@ -213,7 +270,8 @@ def mainwindowwidget():
     ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
     ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
     ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
-    tk.Checkbutton(mainwindow, text="Collect data for\n Gaussian FFT analysis", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=0)
+    fftBUT=tk.Checkbutton(mainwindow, text="Collect data for\n Gaussian FFT analysis", font=("Helvetica",9),command=fftbuttonvar, bg="#bdc3c7", activebackground="#bdc3c7")
+    fftBUT.grid(row=11,column=0)
     global current, voltage, rpm, temp, ciag
     current=tk.StringVar()
     voltage=tk.StringVar()

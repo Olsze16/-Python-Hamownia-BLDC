@@ -17,5 +17,6 @@ def mainwindowstyle():
     buttonstyle.configure("But1.TButton", background="#27ae60", height=1, width=15)
     buttonstyle.configure("But2.TButton", background="blue", height=0.5, width=15)
     buttonstyle.configure("But3.TButton", background="#ffbb33", height=1, width=15)
+    buttonstyle.configure("But4.TButton", background="firebrick2", height=1, width=15)
     checkbuttonstyle=ttk.Style()
     checkbuttonstyle.configure("C1.TCheckbutton", background="bdc3c7", font=("Helvetica",10), width=15, height=1)
