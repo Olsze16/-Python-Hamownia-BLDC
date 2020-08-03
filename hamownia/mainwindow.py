@@ -17,6 +17,9 @@ plt.style.use('dark_background')
 #Private variables
 i=0
 data_int=[]
+xaxis=False
+yaxis=False
+zaxis=False
 sensorsread=False
 fftread=False
 dynamicplot=False
@@ -157,7 +160,7 @@ def showplottest_clicked():
                 line4.set_ydata(ys4)
                 return line, line1, line2, line3, line4,
                 pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
-        ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True)
+        ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True, frames=5)
         plt.show()
     elif(sensorsread==True and dynamicplot==False):
         current.set(str("0") + str(" [A]"))
@@ -175,6 +178,18 @@ def changesensorsvar():
     global sensorsread
     sensorsread = not sensorsread
     return sensorsread
+def xaxisbut():
+    global xaxis
+    xaxis = not xaxis
+    return xaxis
+def zaxisbut():
+    global zaxis
+    zaxis = not zaxis
+    return zaxis
+def yaxisbut():
+    global yaxis
+    yaxis = not yaxis
+    return yaxis
 def fftbuttonvar():
     global fftread
     fftread = not fftread
@@ -227,8 +242,8 @@ def stopbutton_clicked():
     global reczny, fftBUT, fftread
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
     reczny=False
-    fftBUT.deselect()
-    fftread=False
+    #fftBUT.deselect()
+    #fftread=False
     mainwindow.update()
 def testbutton_clicked():
     tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
@@ -236,53 +251,92 @@ def mainwindowwidget():
     #Definicja wyglądu mainwindow
     global mainwindow
     mainwindow = tk.Tk()
+    tab_parent = ttk.Notebook(mainwindow, style="TNotebook")
+    tab1 = ttk.Frame(tab_parent, style="Frame1.TFrame")
+    tab2 = ttk.Frame(tab_parent, style="Frame1.TFrame")
+    tab_parent.add(tab1, text="Hamownia BLDC")
+    tab_parent.add(tab2, text="Analiza drgań FFT")
+    tab_parent.grid(row=0, column=0)
     styledef.mainwindowstyle()
-    mainwindow.title("BLDC")
+    mainwindow.title("Praca Inżynierska - Kamil Olszewski, Daniel Świątek")
     mainwindow.configure(bg="#bdc3c7")
-    tk.Label(mainwindow,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
-    tk.Label(mainwindow, text="", bg="#bdc3c7").grid(row=2, column=2)
-    tk.Label(mainwindow,bg="#bdc3c7", text="Podłączono z sięcią \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
+    tk.Label(tab1,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
+    tk.Label(tab2,bg="#bdc3c7", text="        Analiza FFT drgań silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2, sticky="NSEW")
+    tk.Label(tab1, text="", bg="#bdc3c7").grid(row=2, column=2)
+    tk.Label(tab2, text="", bg="#bdc3c7").grid(row=2, column=2)
+    tk.Label(tab1,bg="#bdc3c7", text="Serwer STM32  \n Ethernet UDP \n Adres IP:"+ servIP +"\nPort:" + str(servPORT), relief="solid", font=("Arial",8)).grid(row=1, column=0, columnspan=2)
+    tk.Label(tab2,bg="#bdc3c7", text="Serwer STM32  \n Ethernet UDP \n Adres IP:"+ servIP +"\nPort:" + str(servPORT), relief="solid", font=("Arial",8)).grid(row=1, column=0, columnspan=2)
+    tk.Label(tab1,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
+    tk.Label(tab2,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
 
     #Konfiguracja przycisków do obsługi stringów wysyłanych do STM32-F7
-    ttk.Label(mainwindow, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
+    ttk.Label(tab1, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
+    ttk.Label(tab2, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
     putlogo1=tk.PhotoImage(file='putlogo.png')
-    imagelabel=tk.Label(mainwindow, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
-    ttk.Separator(mainwindow).grid(row=4, column=0, columnspan=7, ipadx=400)
-    ttk.Separator(mainwindow).grid(row=10, column=0, columnspan=7, ipadx=400)
-    ttk.Button(mainwindow,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
-    tk.Checkbutton(mainwindow, text="Show dynamic plots\n during test:",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11, column=2)
-    ttk.Button(mainwindow,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
-    ttk.Button(mainwindow,text="Connection test", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
+    tk.Label(tab1, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
+    tk.Label(tab2, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
+    ttk.Separator(tab1).grid(row=4, column=0, columnspan=7, ipadx=400)
+    ttk.Separator(tab1).grid(row=10, column=0, columnspan=7, ipadx=400)
+    ttk.Separator(tab2).grid(row=4, column=0, columnspan=7, ipadx=400)
+    ttk.Separator(tab2).grid(row=10, column=0, columnspan=7, ipadx=400)
+    ttk.Button(tab1,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
+    ttk.Button(tab2,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
+    tk.Checkbutton(tab1, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11, column=2)
+    tk.Checkbutton(tab2, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
+    ttk.Button(tab1,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
+    ttk.Button(tab2,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
+    ttk.Button(tab1,text="Test połączenia", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
+    ttk.Button(tab2,text="Test połączenia", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
     global rpmset, scale, fftBUT
-    ttk.Label(mainwindow, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
-    ttk.Label(mainwindow, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
-    scale=tk.Scale(mainwindow, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
+    ttk.Label(tab1, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
+    ttk.Label(tab2, text="Konfiguracja FFT:", style="BW.TLabel").grid(row=3, column=0)
+    ttk.Label(tab1, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
+    ttk.Label(tab2, text="Wybierz osie do analizy:", style="BW4.TLabel").grid(row=5,column=0)
+    tk.Checkbutton(tab1, text="X AXIS", font=("Helvetica",9),command=xaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab2, text="X AXIS", font=("Helvetica",9),command=xaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=6,column=0,pady=4)
+    tk.Checkbutton(tab1, text="Y AXIS", font=("Helvetica",9),command=yaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab2, text="Y AXIS", font=("Helvetica",9),command=yaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=7, column=0, pady=3)
+    tk.Checkbutton(tab1, text="Z AXIS", font=("Helvetica",9),command=zaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab2, text="Z AXIS", font=("Helvetica",9),command=zaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=8,column=0, pady=3)
+    scale=tk.Scale(tab1, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
     scale.grid(row=6, column=0)
-    ttk.Button(mainwindow,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
+    ttk.Button(tab1,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
-    ttk.Label(mainwindow, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
-    tk.Checkbutton(mainwindow, text="Show dynamic sensors\n value during test", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=5,columnspan=2)
-    ttk.Label(mainwindow,text="Sensor 1:", style="BW3.TLabel").grid(row=5, column=5)
-    ttk.Label(mainwindow,text="Sensor 2:", style="BW3.TLabel").grid(row=6, column=5)
-    ttk.Label(mainwindow,text="Sensor 3:", style="BW3.TLabel").grid(row=7, column=5)
-    ttk.Label(mainwindow,text="Sensor 4:", style="BW3.TLabel").grid(row=8, column=5)
-    ttk.Label(mainwindow,text="Sensor 5:", style="BW3.TLabel").grid(row=9, column=5)
-    fftBUT=tk.Checkbutton(mainwindow, text="Collect data for\n Gaussian FFT analysis", font=("Helvetica",9),command=fftbuttonvar, bg="#bdc3c7", activebackground="#bdc3c7")
-    fftBUT.grid(row=11,column=0)
+    ttk.Label(tab1, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
+    ttk.Label(tab2, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
+    tk.Checkbutton(tab1, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=5,columnspan=2)
+    tk.Checkbutton(tab2, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=5,columnspan=2)
+    ttk.Label(tab1,text="Prąd:", style="BW3.TLabel").grid(row=5, column=5, sticky="W")
+    ttk.Label(tab1,text="Napięcie:", style="BW3.TLabel").grid(row=6, column=5, sticky="W")
+    ttk.Label(tab1,text="Prędkość:", style="BW3.TLabel").grid(row=7, column=5, sticky="W")
+    ttk.Label(tab1,text="Temperatura:", style="BW3.TLabel").grid(row=8, column=5, sticky="W")
+    ttk.Label(tab1,text="Ciąg:", style="BW3.TLabel").grid(row=9, column=5, sticky="W")
+    ttk.Label(tab2,text="Prąd:", style="BW3.TLabel").grid(row=5, column=5, sticky="W")
+    ttk.Label(tab2,text="Napięcie:", style="BW3.TLabel").grid(row=6, column=5, sticky="W")
+    ttk.Label(tab2,text="Prędkość:", style="BW3.TLabel").grid(row=7, column=5, sticky="W")
+    ttk.Label(tab2,text="Temperatura:", style="BW3.TLabel").grid(row=8, column=5, sticky="W")
+    ttk.Label(tab2,text="Ciąg:", style="BW3.TLabel").grid(row=9, column=5, sticky="W")
+    curvolt=tk.Checkbutton(tab2, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    curvolt.grid(row=11,column=2)
     global current, voltage, rpm, temp, ciag
     current=tk.StringVar()
     voltage=tk.StringVar()
     rpm=tk.StringVar()
     temp=tk.StringVar()
     ciag=tk.StringVar()
-    ttk.Label(mainwindow, textvariable=current, style="BW2.TLabel").grid(row=5, column=6, sticky="E")
-    ttk.Label(mainwindow, textvariable=voltage, style="BW2.TLabel").grid(row=6, column=6, sticky="E")
-    ttk.Label(mainwindow, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
-    ttk.Label(mainwindow, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
-    ttk.Label(mainwindow, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
+    ttk.Label(tab1, textvariable=current, style="BW2.TLabel").grid(row=5, column=6, sticky="E")
+    ttk.Label(tab1, textvariable=voltage, style="BW2.TLabel").grid(row=6, column=6, sticky="E")
+    ttk.Label(tab1, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
+    ttk.Label(tab1, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
+    ttk.Label(tab1, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
+    ttk.Label(tab2, textvariable=current, style="BW2.TLabel").grid(row=5, column=6, sticky="E")
+    ttk.Label(tab2, textvariable=voltage, style="BW2.TLabel").grid(row=6, column=6, sticky="E")
+    ttk.Label(tab2, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
+    ttk.Label(tab2, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
+    ttk.Label(tab2, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
     mainwindow.resizable(0, 0)
     while True:
         mainwindow.update()

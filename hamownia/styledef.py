@@ -12,6 +12,9 @@ def mainwindowstyle():
     labelstyle.configure("BW2.TLabel", foreground="red3",background="#bdc3c7", font=("Helvetica",10))
     labelstyle.configure("BW4.TLabel", foreground="black", background="#bdc3c7", font=("Helvetica", 9))
     labelstyle.configure("BW3.TLabel",background="#bdc3c7", font=("Helvetica",10))
+    labelstyle.configure('Frame1.TFrame', background='#bdc3c7')
+    labelstyle.configure("TNotebook", background="gainsboro")
+    labelstyle.map("TNotebook.Tab",background=[('selected', 'snow4'), ('!selected', 'snow3')])
     # sub-def middle button
     buttonstyle=ttk.Style()
     buttonstyle.configure("But1.TButton", background="#27ae60", height=1, width=15)
