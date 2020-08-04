@@ -2,16 +2,12 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 import socket
-import matplotlib
 from matplotlib import pyplot as plt
-from plotsensors import calculatesensors, updateplots
 import matplotlib.animation as animation
 import styledef
 import time
 import numpy as np
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.figure import Figure
+
 
 plt.style.use('dark_background')
 #Private variables
@@ -21,11 +17,11 @@ xaxis=False
 yaxis=False
 zaxis=False
 sensorsread=False
-fftread=False
+cvaxis=False
 dynamicplot=False
 reczny=False
-x=[]
-y=[]
+set_speed = 45
+set_time = 20
 ping =0.001
 rpmset=25
 
@@ -33,45 +29,472 @@ rpmset=25
 #Private variables END
 def testwithfft():
     global i
-    fft = np.zeros(255, dtype=float)
-    fft1 = np.zeros(255, dtype=float)
-    fft2 = np.zeros(255, dtype=float)
-    freq = np.arange(start=0, stop=255, step=1)
+    fft = np.zeros(255, dtype=float)  # x
+    fft1 = np.zeros(255, dtype=float)  # y
+    fft2 = np.zeros(255, dtype=float)  # z
+    fft3 = np.zeros(255, dtype=float)  # napiecie
+    fft4 = np.zeros(255, dtype=float)  # prad
+    freq = np.linspace(0, 2000, num=255, endpoint=True)
     plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(311)
-    ax1 = fig.add_subplot(312)
-    ax2 = fig.add_subplot(313)
-    line1, = ax.plot(freq, fft)
-    line2, = ax1.plot(freq, fft1)
-    line3, = ax2.plot(freq, fft2)
-    while(fftread==True):
-        mainwindow.update()
-        try:
-            dataplot = soc.recv(36)
-            a_list = dataplot.split()
-            map_object = map(float, a_list)
-            data_intplot = list(map_object)
-            print(dataplot)
-            if i==255:
+    fig = plt.figure(figsize=(8,8))
+    if(xaxis == False and yaxis == False and zaxis == False and cvaxis == True):
+        ax3 = fig.add_subplot(211)
+        ax3.set_title("Koko")
+        ax4 = fig.add_subplot(212)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == False and yaxis == False and zaxis == False and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
                 print(dataplot)
-                i=0
-                ax1.cla()
-                ax.cla()
-                ax2.cla()
-                line1, = ax.plot(freq, fft)
-                line2, = ax1.plot(freq, fft1)
-                line3, = ax2.plot(freq, fft2)
-                ax.set_ylim([0, 2])
-                ax1.set_ylim([0, 2])
-                ax2.set_ylim([0, 2])
-                fig.canvas.draw()
-            fft[i]=data_intplot[0]
-            fft1[i]=data_intplot[1]
-            fft2[i]=data_intplot[2]
-            i+=1
-        except:
-            pass #elobenc
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax3.cla()
+                    ax4.cla()
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    ax3.set_ylabel("Magnitude FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Magnitude FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
+                    fig.canvas.draw()
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif(xaxis == False and yaxis == False and zaxis == True and cvaxis == False):
+        ax2 = fig.add_subplot(111)
+        line2, = ax2.plot(freq, fft2)
+        while (xaxis == False and yaxis == False and zaxis == True and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax2.cla()
+                    line2, = ax2.plot(freq, fft2)
+                    ax2.set_ylim([0, 200])
+                    ax2.set_ylabel("Magnitude")
+                    ax2.set_xlabel("Frequency [Hz]")
+                    fig.canvas.draw()
+                fft2[i] = data_intplot[2]
+                i += 1
+            except:
+                pass
+    elif (xaxis == False and yaxis == False and zaxis == True and cvaxis == True):
+        ax2 = fig.add_subplot(311)
+        ax3 = fig.add_subplot(312)
+        ax4 = fig.add_subplot(313)
+        line2, = ax2.plot(freq, fft2)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == False and yaxis == False and zaxis == True and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax2.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line2, = ax2.plot(freq, fft2)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax2.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft2[i] = data_intplot[2]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == False and yaxis == True and zaxis == False and cvaxis == False):
+        ax1 = fig.add_subplot(111)
+        line1, = ax1.plot(freq, fft1)
+        while (xaxis == False and yaxis == True and zaxis == False and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax1.cla()
+                    line1, = ax1.plot(freq, fft1)
+                    ax1.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft1[i] = data_intplot[1]
+                i += 1
+            except:
+                pass
+    elif (xaxis == False and yaxis == True and zaxis == False and cvaxis == True):
+        ax1 = fig.add_subplot(311)
+        ax3 = fig.add_subplot(312)
+        ax4 = fig.add_subplot(313)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        line1, = ax1.plot(freq, fft1)
+        while (xaxis == False and yaxis == True and zaxis == False and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax1.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line1, = ax1.plot(freq, fft1)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax1.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft1[i] = data_intplot[1]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == False and yaxis == True and zaxis == True and cvaxis == False):
+        ax1 = fig.add_subplot(211)
+        ax2 = fig.add_subplot(212)
+        line2, = ax2.plot(freq, fft2)
+        line1, = ax1.plot(freq, fft1)
+        while (xaxis == False and yaxis == True and zaxis == True and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax1.cla()
+                    ax2.cla()
+                    line1, = ax1.plot(freq, fft1)
+                    line2, = ax2.plot(freq, fft2)
+                    ax1.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft1[i] = data_intplot[1]
+                fft2[i] = data_intplot[2]
+                i += 1
+            except:
+                pass
+    elif (xaxis == False and yaxis == True and zaxis == True and cvaxis == True):
+        ax1 = fig.add_subplot(411)
+        ax2 = fig.add_subplot(412)
+        ax3 = fig.add_subplot(413)
+        ax4 = fig.add_subplot(414)
+        line2, = ax2.plot(freq, fft2)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        line1, = ax1.plot(freq, fft1)
+        while (xaxis == False and yaxis == True and zaxis == True and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax1.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    ax2.cla()
+                    line1, = ax1.plot(freq, fft1)
+                    line2, = ax2.plot(freq, fft2)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax1.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft1[i] = data_intplot[1]
+                fft2[i] = data_intplot[2]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == False and zaxis == False and cvaxis == False):
+        ax = fig.add_subplot(111)
+        line, = ax.plot(freq, fft)
+        while (xaxis == True and yaxis == False and zaxis == False and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    line, = ax.plot(freq, fft)
+                    ax.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == False and zaxis == False and cvaxis == True):
+        ax = fig.add_subplot(311)
+        ax3 = fig.add_subplot(312)
+        ax4 = fig.add_subplot(313)
+        line, = ax.plot(freq, fft)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == True and yaxis == False and zaxis == False and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line, = ax.plot(freq, fft)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == False and zaxis == True and cvaxis == False):
+        ax = fig.add_subplot(211)
+        ax2 = fig.add_subplot(212)
+        line, = ax.plot(freq, fft)
+        line2, = ax2.plot(freq, fft2)
+        while (xaxis == True and yaxis == False and zaxis == True and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax2.cla()
+                    line, = ax.plot(freq, fft)
+                    line2, = ax2.plot(freq, fft2)
+                    ax.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft2[i] = data_intplot[2]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == False and zaxis == True and cvaxis == True):
+        ax = fig.add_subplot(411)
+        ax2 = fig.add_subplot(412)
+        ax3 = fig.add_subplot(413)
+        ax4 = fig.add_subplot(414)
+        line, = ax.plot(freq, fft)
+        line2, = ax2.plot(freq, fft2)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == True and yaxis == False and zaxis == True and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax2.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line, = ax.plot(freq, fft)
+                    line2, = ax2.plot(freq, fft2)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft2[i] = data_intplot[2]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == True and zaxis == False and cvaxis == False):
+        ax = fig.add_subplot(211)
+        ax1 = fig.add_subplot(212)
+        line, = ax.plot(freq, fft)
+        line1, = ax1.plot(freq, fft1)
+        while (xaxis == True and yaxis == True and zaxis == False and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax1.cla()
+                    line, = ax.plot(freq, fft)
+                    line1, = ax1.plot(freq, fft1)
+                    ax.set_ylim([0, 200])
+                    ax1.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft1[i] = data_intplot[1]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == True and zaxis == False and cvaxis == True):
+        ax = fig.add_subplot(411)
+        ax1 = fig.add_subplot(412)
+        ax3 = fig.add_subplot(413)
+        ax4 = fig.add_subplot(414)
+        line, = ax.plot(freq, fft)
+        line1, = ax1.plot(freq, fft1)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == True and yaxis == True and zaxis == False and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax1.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line, = ax.plot(freq, fft)
+                    line1, = ax1.plot(freq, fft1)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax.set_ylim([0, 200])
+                    ax1.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft1[i] = data_intplot[1]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == True and zaxis == True and cvaxis == False):
+        ax = fig.add_subplot(311)
+        ax1 = fig.add_subplot(312)
+        ax2 = fig.add_subplot(313)
+        line, = ax.plot(freq, fft)
+        line1, = ax1.plot(freq, fft1)
+        line2, = ax2.plot(freq, fft2)
+        while (xaxis == True and yaxis == True and zaxis == True and cvaxis == False):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax1.cla()
+                    ax2.cla()
+                    line, = ax.plot(freq, fft)
+                    line1, = ax1.plot(freq, fft1)
+                    line2, = ax2.plot(freq, fft2)
+                    ax.set_ylim([0, 200])
+                    ax1.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft1[i] = data_intplot[1]
+                fft2[i] = data_intplot[2]
+                i += 1
+            except:
+                pass
+    elif (xaxis == True and yaxis == True and zaxis == True and cvaxis == True):
+        ax = fig.add_subplot(511)
+        ax1 = fig.add_subplot(512)
+        ax2 = fig.add_subplot(513)
+        ax3 = fig.add_subplot(514)
+        ax4 = fig.add_subplot(515)
+        line, = ax.plot(freq, fft)
+        line1, = ax1.plot(freq, fft1)
+        line2, = ax2.plot(freq, fft2)
+        line3, = ax3.plot(freq, fft3)
+        line4, = ax4.plot(freq, fft4)
+        while (xaxis == True and yaxis == True and zaxis == True and cvaxis == True):
+            mainwindow.update()
+            try:
+                dataplot = soc.recv(55)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                if i == 255:
+                    i = 0
+                    ax.cla()
+                    ax1.cla()
+                    ax2.cla()
+                    ax3.cla()
+                    ax4.cla()
+                    line, = ax.plot(freq, fft)
+                    line1, = ax1.plot(freq, fft1)
+                    line2, = ax2.plot(freq, fft2)
+                    line3, = ax3.plot(freq, fft3)
+                    line4, = ax4.plot(freq, fft4)
+                    ax.set_ylim([0, 200])
+                    ax1.set_ylim([0, 200])
+                    ax2.set_ylim([0, 200])
+                    ax3.set_ylim([0, 2])
+                    ax4.set_ylim([0, 30])
+                    fig.canvas.draw()
+                fft[i] = data_intplot[0]
+                fft1[i] = data_intplot[1]
+                fft2[i] = data_intplot[2]
+                fft3[i] = data_intplot[3]
+                fft4[i] = data_intplot[4]
+                i += 1
+            except:
+                pass
 def dynamicplotbox():
     global dynamicplot
     dynamicplot = not dynamicplot
@@ -173,6 +596,7 @@ def showplottest_clicked():
                 rpmset = scale.get()
                 rpmsetbyes = "3 " + str(rpmset)
                 soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
+                receivedata()
             receivedata()
 def changesensorsvar():
     global sensorsread
@@ -190,10 +614,10 @@ def yaxisbut():
     global yaxis
     yaxis = not yaxis
     return yaxis
-def fftbuttonvar():
-    global fftread
-    fftread = not fftread
-    return fftread
+def cvaxisbut():
+    global cvaxis
+    cvaxis = not cvaxis
+    return cvaxis
 def receivedata():
     mainwindow.update()
     time.sleep(ping)
@@ -229,24 +653,42 @@ def connectbutton_clicked():
     welcomewindow.destroy()
     mainwindowwidget()
 def startbutton_clicked():
-    global i
-    if(fftread==True):
-        soc.sendto(bytes("4",  "utf-8"), (servIP, servPORT))
-        testwithfft()
-        i+=1
-    else:
-        soc.sendto(bytes("1",  "utf-8"), (servIP, servPORT))
-        showplottest_clicked()
-        i+=1
+    global set_speed, set_time
+    stringinbytes = "1 "+ str(set_speed)+" "+str(set_time)
+    soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
+    showplottest_clicked()
+def startfftbutton_clicked():
+    global set_speed, set_time
+    stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)
+    soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
+    testwithfft()
 def stopbutton_clicked():
-    global reczny, fftBUT, fftread
+    global reczny, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
     reczny=False
-    #fftBUT.deselect()
-    #fftread=False
+    xaxis=False
+    yaxis=False
+    zaxis=False
+    cvaxis=False
+    dynamicplot=False
+    sensorsread=False
+    dyn.deselect()
+    xaxisbut1.deselect()
+    yaxisbut1.deselect()
+    zaxisbut1.deselect()
+    sensbut1.deselect()
+    curvolt.deselect()
     mainwindow.update()
 def testbutton_clicked():
-    tk.messagebox.showerror(title="Connection test", message="STM32 not connected" + str(data_int[0]))
+    soc.sendto(bytes("2",  "utf-8"), (servIP, servPORT))
+    time.sleep(0.1)
+    try:
+        dataplot = soc.recv(2)
+        if (dataplot==b'OK'):
+            tk.messagebox.showinfo(title="Connection test", message="STM32 connected!")
+    except:
+        tk.messagebox.showerror(title="Connection test", message="STM32 not connected")
+        pass
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
     global mainwindow
@@ -270,6 +712,7 @@ def mainwindowwidget():
     tk.Label(tab2,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
 
     #Konfiguracja przycisków do obsługi stringów wysyłanych do STM32-F7
+    global dyn,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1, curvolt
     ttk.Label(tab1, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
     ttk.Label(tab2, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
     putlogo1=tk.PhotoImage(file='putlogo.png')
@@ -280,13 +723,16 @@ def mainwindowwidget():
     ttk.Separator(tab2).grid(row=4, column=0, columnspan=7, ipadx=400)
     ttk.Separator(tab2).grid(row=10, column=0, columnspan=7, ipadx=400)
     ttk.Button(tab1,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
-    ttk.Button(tab2,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
-    tk.Checkbutton(tab1, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11, column=2)
+    ttk.Button(tab2,text="Start BLDC", style="But1.TButton", command=startfftbutton_clicked).grid(row=5,column=2)
+    dyn=tk.Checkbutton(tab1, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
+    dyn.grid(row=11, column=2)
     tk.Checkbutton(tab2, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
     ttk.Button(tab1,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
     ttk.Button(tab2,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
-    ttk.Button(tab1,text="Test połączenia", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
-    ttk.Button(tab2,text="Test połączenia", style="But1.TButton", command=testbutton_clicked).grid(row=7,column=2)
+    ttk.Button(tab1,text="Test połączenia", style="But6.TButton", command=testbutton_clicked).grid(row=8,column=2)
+    ttk.Button(tab2,text="Test połączenia", style="But6.TButton", command=testbutton_clicked).grid(row=8,column=2)
+    ttk.Button(tab1,text="Ustawienia", style="But5.TButton", command=opensettings).grid(row=7,column=2)
+    ttk.Button(tab2,text="Ustawienia", style="But5.TButton", command=opensettings).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
     global rpmset, scale, fftBUT
@@ -294,32 +740,30 @@ def mainwindowwidget():
     ttk.Label(tab2, text="Konfiguracja FFT:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(tab1, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
     ttk.Label(tab2, text="Wybierz osie do analizy:", style="BW4.TLabel").grid(row=5,column=0)
-    tk.Checkbutton(tab1, text="X AXIS", font=("Helvetica",9),command=xaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
-    tk.Checkbutton(tab2, text="X AXIS", font=("Helvetica",9),command=xaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=6,column=0,pady=4)
-    tk.Checkbutton(tab1, text="Y AXIS", font=("Helvetica",9),command=yaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
-    tk.Checkbutton(tab2, text="Y AXIS", font=("Helvetica",9),command=yaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=7, column=0, pady=3)
-    tk.Checkbutton(tab1, text="Z AXIS", font=("Helvetica",9),command=zaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7")
-    tk.Checkbutton(tab2, text="Z AXIS", font=("Helvetica",9),command=zaxisbut(), bg="#bdc3c7", activebackground="#bdc3c7").grid(row=8,column=0, pady=3)
+    tk.Checkbutton(tab1, text="X AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    xaxisbut1=tk.Checkbutton(tab2, text="X AXIS", font=("Helvetica",9),command=xaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
+    xaxisbut1.grid(row=6,column=0,pady=4)
+    tk.Checkbutton(tab1, text="Y AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    yaxisbut1=tk.Checkbutton(tab2, text="Y AXIS", font=("Helvetica",9),command=yaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
+    yaxisbut1.grid(row=7, column=0, pady=3)
+    tk.Checkbutton(tab1, text="Z AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    zaxisbut1=tk.Checkbutton(tab2, text="Z AXIS", font=("Helvetica",9),command=zaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
+    zaxisbut1.grid(row=8,column=0, pady=3)
     scale=tk.Scale(tab1, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
     scale.grid(row=6, column=0)
     ttk.Button(tab1,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
 
     #Konfiguracja wyświetlania pomiarów na żywo
     ttk.Label(tab1, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
-    ttk.Label(tab2, text="Odczyt sensorów:", style="BW.TLabel").grid(row=3, column=5, columnspan=2)
-    tk.Checkbutton(tab1, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=5,columnspan=2)
-    tk.Checkbutton(tab2, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7").grid(row=11,column=5,columnspan=2)
+    sensbut1=tk.Checkbutton(tab1, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7")
+    sensbut1.grid(row=11,column=5,columnspan=2)
+    tk.Checkbutton(tab2, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7")
     ttk.Label(tab1,text="Prąd:", style="BW3.TLabel").grid(row=5, column=5, sticky="W")
     ttk.Label(tab1,text="Napięcie:", style="BW3.TLabel").grid(row=6, column=5, sticky="W")
     ttk.Label(tab1,text="Prędkość:", style="BW3.TLabel").grid(row=7, column=5, sticky="W")
     ttk.Label(tab1,text="Temperatura:", style="BW3.TLabel").grid(row=8, column=5, sticky="W")
     ttk.Label(tab1,text="Ciąg:", style="BW3.TLabel").grid(row=9, column=5, sticky="W")
-    ttk.Label(tab2,text="Prąd:", style="BW3.TLabel").grid(row=5, column=5, sticky="W")
-    ttk.Label(tab2,text="Napięcie:", style="BW3.TLabel").grid(row=6, column=5, sticky="W")
-    ttk.Label(tab2,text="Prędkość:", style="BW3.TLabel").grid(row=7, column=5, sticky="W")
-    ttk.Label(tab2,text="Temperatura:", style="BW3.TLabel").grid(row=8, column=5, sticky="W")
-    ttk.Label(tab2,text="Ciąg:", style="BW3.TLabel").grid(row=9, column=5, sticky="W")
-    curvolt=tk.Checkbutton(tab2, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    curvolt=tk.Checkbutton(tab2, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=cvaxisbut)
     curvolt.grid(row=11,column=2)
     global current, voltage, rpm, temp, ciag
     current=tk.StringVar()
@@ -332,11 +776,6 @@ def mainwindowwidget():
     ttk.Label(tab1, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
     ttk.Label(tab1, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
     ttk.Label(tab1, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
-    ttk.Label(tab2, textvariable=current, style="BW2.TLabel").grid(row=5, column=6, sticky="E")
-    ttk.Label(tab2, textvariable=voltage, style="BW2.TLabel").grid(row=6, column=6, sticky="E")
-    ttk.Label(tab2, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
-    ttk.Label(tab2, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
-    ttk.Label(tab2, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
     mainwindow.resizable(0, 0)
     while True:
         mainwindow.update()
@@ -378,6 +817,28 @@ def welcomewindowwidget():
 
     welcomewindow.resizable(0,0)
     welcomewindow.mainloop()
+def opensettings():
+    global settings_speed, settings_time, settings
+    settings = tk.Tk()
+    styledef.welcomnewindowstyle()
+    settings.title("Ustawienia")
+    settings.configure(bg="#bdc3c7")
+    tk.Label(settings, bg="#bdc3c7", text="Prędkość końcowa [% max]:").grid(row=0, column=0, sticky="W")
+    tk.Label(settings, bg="#bdc3c7", text="Czas trwania testu [s]:").grid(row=1, column=0, sticky="W")
+    settings_speed=tk.Scale(settings, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
+    settings_speed.set(45)
+    settings_speed.grid(row=0, column=1, sticky="E")
+    settings_time=tk.Scale(settings, from_=10, to=99, resolution=1, orient=tk.HORIZONTAL)
+    settings_time.grid(row=1, column=1, sticky="E")
+    settings_time.set(20)
+    tk.Button(settings, bg="#bdc3c7", text="Zatwierdź zmiany", command=acceptchanges).grid(row=2,column=0, columnspan=2)
+    settings.resizable(0,0)
+def acceptchanges():
+    global set_speed, set_time, settings_speed, settings_time
+    set_speed = settings_speed.get()
+    set_time = settings_time.get()
+    settings.destroy()
+    return set_speed, set_time
 
 welcomewindowwidget()
 
