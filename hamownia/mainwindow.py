@@ -22,6 +22,8 @@ dynamicplot=False
 reczny=False
 set_speed = 45
 set_time = 20
+set_rampa = 4
+set_rampcalc=2
 ping =0.001
 rpmset=25
 
@@ -37,9 +39,10 @@ def testwithfft():
     freq = np.linspace(0, 2000, num=255, endpoint=True)
     plt.ion()
     fig = plt.figure(figsize=(8,8))
+    fig.suptitle('Analiza czasowo-częstotliwościowa FFT', fontsize=12)
+    fig.canvas.set_window_title('Plotowanie FFT')
     if(xaxis == False and yaxis == False and zaxis == False and cvaxis == True):
         ax3 = fig.add_subplot(211)
-        ax3.set_title("Koko")
         ax4 = fig.add_subplot(212)
         line3, = ax3.plot(freq, fft3)
         line4, = ax4.plot(freq, fft4)
@@ -59,9 +62,9 @@ def testwithfft():
                     line4, = ax4.plot(freq, fft4)
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
-                    ax3.set_ylabel("Magnitude FFT")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
                     ax3.set_xlabel("Frequency [Hz]")
-                    ax4.set_ylabel("Magnitude FFT")
+                    ax4.set_ylabel("Prąd\nMagnitude FFT")
                     ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft3[i] = data_intplot[3]
@@ -84,7 +87,7 @@ def testwithfft():
                     ax2.cla()
                     line2, = ax2.plot(freq, fft2)
                     ax2.set_ylim([0, 200])
-                    ax2.set_ylabel("Magnitude")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
                     ax2.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft2[i] = data_intplot[2]
@@ -116,6 +119,12 @@ def testwithfft():
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft2[i] = data_intplot[2]
                 fft3[i] = data_intplot[3]
@@ -138,6 +147,8 @@ def testwithfft():
                     ax1.cla()
                     line1, = ax1.plot(freq, fft1)
                     ax1.set_ylim([0, 200])
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft1[i] = data_intplot[1]
                 i += 1
@@ -168,6 +179,12 @@ def testwithfft():
                     ax1.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft1[i] = data_intplot[1]
                 fft3[i] = data_intplot[3]
@@ -195,6 +212,10 @@ def testwithfft():
                     line2, = ax2.plot(freq, fft2)
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft1[i] = data_intplot[1]
                 fft2[i] = data_intplot[2]
@@ -231,6 +252,14 @@ def testwithfft():
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft1[i] = data_intplot[1]
                 fft2[i] = data_intplot[2]
@@ -254,6 +283,8 @@ def testwithfft():
                     ax.cla()
                     line, = ax.plot(freq, fft)
                     ax.set_ylim([0, 200])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 i += 1
@@ -284,6 +315,12 @@ def testwithfft():
                     ax.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft3[i] = data_intplot[3]
@@ -311,6 +348,10 @@ def testwithfft():
                     line2, = ax2.plot(freq, fft2)
                     ax.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft2[i] = data_intplot[2]
@@ -347,6 +388,14 @@ def testwithfft():
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft2[i] = data_intplot[2]
@@ -375,6 +424,10 @@ def testwithfft():
                     line1, = ax1.plot(freq, fft1)
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft1[i] = data_intplot[1]
@@ -411,6 +464,14 @@ def testwithfft():
                     ax1.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft1[i] = data_intplot[1]
@@ -444,6 +505,12 @@ def testwithfft():
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft1[i] = data_intplot[1]
@@ -486,6 +553,16 @@ def testwithfft():
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
+                    ax.set_ylabel("X Axis\nMag FFT")
+                    ax.set_xlabel("Frequency [Hz]")
+                    ax1.set_ylabel("Y Axis\nMag FFT")
+                    ax1.set_xlabel("Frequency [Hz]")
+                    ax2.set_ylabel("Z Axis\nMag FFT")
+                    ax2.set_xlabel("Frequency [Hz]")
+                    ax3.set_ylabel("Napięcie\nMag FFT")
+                    ax3.set_xlabel("Frequency [Hz]")
+                    ax4.set_ylabel("Prąd\nMag FFT")
+                    ax4.set_xlabel("Frequency [Hz]")
                     fig.canvas.draw()
                 fft[i] = data_intplot[0]
                 fft1[i] = data_intplot[1]
@@ -502,7 +579,7 @@ def dynamicplotbox():
 def showplottest_clicked():
     if (dynamicplot==True):
         x_len = 200  # Number of points to display
-        fig, (ax,ax1, ax2, ax3, ax4) = plt.subplots(nrows=5, sharex=True)
+        fig1, (ax,ax1, ax2, ax3, ax4) = plt.subplots(nrows=5, sharex=True)
         ax.set_ylabel("[A]")
         ax1.set_ylabel("[V]")
         ax2.set_ylabel("[rpm]")
@@ -583,7 +660,7 @@ def showplottest_clicked():
                 line4.set_ydata(ys4)
                 return line, line1, line2, line3, line4,
                 pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
-        ani = animation.FuncAnimation(fig, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True, frames=5)
+        ani = animation.FuncAnimation(fig1, animate, fargs=(ys,ys1,ys2,ys3,ys4),interval=100,blit=True, frames=6)
         plt.show()
     elif(sensorsread==True and dynamicplot==False):
         current.set(str("0") + str(" [A]"))
@@ -635,7 +712,10 @@ def receivedata():
     except socket.error: #jezeli socket nie dostaje danych:
         pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def startreczny_clicked():
-    global rpmset, reczny
+    global rpmset, reczny, soc
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
     reczny=True
     rpmset = scale.get()
     rpmsetbyes = "3 " + str(rpmset)
@@ -647,23 +727,32 @@ def connectbutton_clicked():
     UDP_port=int(entryport.get())
     servIP=servIP.get()
     servPORT=int(servPORT.get())
-    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    soc.bind((UDP_ip,UDP_port))
-    soc.setblocking(0)
     welcomewindow.destroy()
     mainwindowwidget()
 def startbutton_clicked():
-    global set_speed, set_time
-    stringinbytes = "1 "+ str(set_speed)+" "+str(set_time)
+    global set_speed, set_time, soc, set_rampcalc
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
+    if(set_rampcalc<10):
+        stringinbytes = "1 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)
+    else:
+        stringinbytes = "1 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     showplottest_clicked()
 def startfftbutton_clicked():
-    global set_speed, set_time
-    stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)
+    global set_speed, set_time, soc, set_rampcalc
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
+    if(set_rampcalc<10):
+        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)
+    else:
+        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     testwithfft()
 def stopbutton_clicked():
-    global reczny, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1
+    global soc, reczny, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
     reczny=False
     xaxis=False
@@ -678,14 +767,20 @@ def stopbutton_clicked():
     zaxisbut1.deselect()
     sensbut1.deselect()
     curvolt.deselect()
+    soc.close()
     mainwindow.update()
 def testbutton_clicked():
+    global soc
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
     soc.sendto(bytes("2",  "utf-8"), (servIP, servPORT))
     time.sleep(0.1)
     try:
         dataplot = soc.recv(2)
         if (dataplot==b'OK'):
             tk.messagebox.showinfo(title="Connection test", message="STM32 connected!")
+            soc.close()
     except:
         tk.messagebox.showerror(title="Connection test", message="STM32 not connected")
         pass
@@ -814,31 +909,41 @@ def welcomewindowwidget():
     ttk.Label(welcomewindow, style="BW1.TLabel", text="Autorzy pracy:").grid(row=8,column=1, sticky="E")
     ttk.Label(welcomewindow, style="BW1.TLabel", text="Kamil Olszewski (133657)").grid(row=9, column=1, sticky="E")
     ttk.Label(welcomewindow, style="BW1.TLabel", text="Daniel Świątek (133671)").grid(row=10, column=1, sticky="E")
-
+    #Promotor
+    ttk.Label(welcomewindow, style="BW1.TLabel", text="Promotor:").grid(row=8,column=0, sticky="W")
+    ttk.Label(welcomewindow, style="BW1.TLabel", text="Dr inż. Dominik Łuczak").grid(row=9, column=0, sticky="W")
+    ttk.Label(welcomewindow, style="BW1.TLabel", text="ZSEP WARiE Put Poznań").grid(row=10, column=0, sticky="W")
+    ttk.Label(welcomewindow, style="BW1.TLabel", text="Poznań University of Technology, 2020").grid(row=11, column=0, columnspan=2)
     welcomewindow.resizable(0,0)
     welcomewindow.mainloop()
 def opensettings():
-    global settings_speed, settings_time, settings
+    global settings_speed, settings_time, settings, settings_rampa, set_rampa, set_time, set_speed
     settings = tk.Tk()
     styledef.welcomnewindowstyle()
     settings.title("Ustawienia")
     settings.configure(bg="#bdc3c7")
     tk.Label(settings, bg="#bdc3c7", text="Prędkość końcowa [% max]:").grid(row=0, column=0, sticky="W")
     tk.Label(settings, bg="#bdc3c7", text="Czas trwania testu [s]:").grid(row=1, column=0, sticky="W")
+    tk.Label(settings, bg="#bdc3c7", text="Rampa przyśpieszenia [%/s]:").grid(row=2, column=0, sticky="W")
     settings_speed=tk.Scale(settings, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
-    settings_speed.set(45)
+    settings_speed.set(set_speed)
     settings_speed.grid(row=0, column=1, sticky="E")
     settings_time=tk.Scale(settings, from_=10, to=99, resolution=1, orient=tk.HORIZONTAL)
     settings_time.grid(row=1, column=1, sticky="E")
-    settings_time.set(20)
-    tk.Button(settings, bg="#bdc3c7", text="Zatwierdź zmiany", command=acceptchanges).grid(row=2,column=0, columnspan=2)
+    settings_time.set(set_time)
+    settings_rampa=tk.Scale(settings, from_=2, to=20, resolution=2, orient=tk.HORIZONTAL)
+    settings_rampa.grid(row=2, column=1, sticky="E")
+    settings_rampa.set(set_rampa)
+    tk.Button(settings, bg="#bdc3c7", text="Zatwierdź zmiany", command=acceptchanges).grid(row=3,column=0, columnspan=2)
     settings.resizable(0,0)
 def acceptchanges():
-    global set_speed, set_time, settings_speed, settings_time
+    global set_speed, set_time, settings_speed, settings_time, set_rampa, settings_rampa, set_rampcalc
     set_speed = settings_speed.get()
     set_time = settings_time.get()
+    set_rampa = settings_rampa.get()
+    set_rampcalc = int((settings_rampa.get() - (settings_rampa.get()/2)))
     settings.destroy()
-    return set_speed, set_time
+    return set_speed, set_time, set_rampa, set_rampcalc
 
 welcomewindowwidget()
 
