@@ -44,13 +44,17 @@ def testwithfft():
     if(xaxis == False and yaxis == False and zaxis == False and cvaxis == True):
         ax3 = fig.add_subplot(211)
         ax4 = fig.add_subplot(212)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == False and yaxis == False and zaxis == False and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
                 print(dataplot)
+
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -58,8 +62,8 @@ def testwithfft():
                     i = 0
                     ax3.cla()
                     ax4.cla()
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
                     ax3.set_ylabel("Napięcie\nMag FFT")
@@ -74,18 +78,21 @@ def testwithfft():
                 pass
     elif(xaxis == False and yaxis == False and zaxis == True and cvaxis == False):
         ax2 = fig.add_subplot(111)
-        line2, = ax2.plot(freq, fft2)
+        line2, = ax2.plot(freq, fft2, 'green')
         while (xaxis == False and yaxis == False and zaxis == True and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
                 if i == 255:
                     i = 0
                     ax2.cla()
-                    line2, = ax2.plot(freq, fft2)
+                    line2, = ax2.plot(freq, fft2, 'green')
                     ax2.set_ylim([0, 200])
                     ax2.set_ylabel("Z Axis\nMag FFT")
                     ax2.set_xlabel("Frequency [Hz]")
@@ -98,13 +105,16 @@ def testwithfft():
         ax2 = fig.add_subplot(311)
         ax3 = fig.add_subplot(312)
         ax4 = fig.add_subplot(313)
-        line2, = ax2.plot(freq, fft2)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line2, = ax2.plot(freq, fft2, 'green')
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == False and yaxis == False and zaxis == True and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -113,9 +123,9 @@ def testwithfft():
                     ax2.cla()
                     ax3.cla()
                     ax4.cla()
-                    line2, = ax2.plot(freq, fft2)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line2, = ax2.plot(freq, fft2, 'green')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
@@ -134,18 +144,21 @@ def testwithfft():
                 pass
     elif (xaxis == False and yaxis == True and zaxis == False and cvaxis == False):
         ax1 = fig.add_subplot(111)
-        line1, = ax1.plot(freq, fft1)
+        line1, = ax1.plot(freq, fft1, 'red')
         while (xaxis == False and yaxis == True and zaxis == False and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
                 if i == 255:
                     i = 0
                     ax1.cla()
-                    line1, = ax1.plot(freq, fft1)
+                    line1, = ax1.plot(freq, fft1, 'red')
                     ax1.set_ylim([0, 200])
                     ax1.set_ylabel("Y Axis\nMag FFT")
                     ax1.set_xlabel("Frequency [Hz]")
@@ -158,13 +171,16 @@ def testwithfft():
         ax1 = fig.add_subplot(311)
         ax3 = fig.add_subplot(312)
         ax4 = fig.add_subplot(313)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
-        line1, = ax1.plot(freq, fft1)
+        line3, = ax3.plot(freq, fft3,'magenta')
+        line4, = ax4.plot(freq, fft4,'limegreen')
+        line1, = ax1.plot(freq, fft1, 'red')
         while (xaxis == False and yaxis == True and zaxis == False and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -173,9 +189,9 @@ def testwithfft():
                     ax1.cla()
                     ax3.cla()
                     ax4.cla()
-                    line1, = ax1.plot(freq, fft1)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
+                    line1, = ax1.plot(freq, fft1, 'red')
                     ax1.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
@@ -195,12 +211,15 @@ def testwithfft():
     elif (xaxis == False and yaxis == True and zaxis == True and cvaxis == False):
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
-        line2, = ax2.plot(freq, fft2)
-        line1, = ax1.plot(freq, fft1)
+        line2, = ax2.plot(freq, fft2,'green')
+        line1, = ax1.plot(freq, fft1,'red')
         while (xaxis == False and yaxis == True and zaxis == True and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -208,8 +227,8 @@ def testwithfft():
                     i = 0
                     ax1.cla()
                     ax2.cla()
-                    line1, = ax1.plot(freq, fft1)
-                    line2, = ax2.plot(freq, fft2)
+                    line2, = ax2.plot(freq, fft2, 'green')
+                    line1, = ax1.plot(freq, fft1, 'red')
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
                     ax1.set_ylabel("Y Axis\nMag FFT")
@@ -227,14 +246,17 @@ def testwithfft():
         ax2 = fig.add_subplot(412)
         ax3 = fig.add_subplot(413)
         ax4 = fig.add_subplot(414)
-        line2, = ax2.plot(freq, fft2)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
-        line1, = ax1.plot(freq, fft1)
+        line2, = ax2.plot(freq, fft2, 'green')
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
+        line1, = ax1.plot(freq, fft1, 'red')
         while (xaxis == False and yaxis == True and zaxis == True and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -244,10 +266,10 @@ def testwithfft():
                     ax3.cla()
                     ax4.cla()
                     ax2.cla()
-                    line1, = ax1.plot(freq, fft1)
-                    line2, = ax2.plot(freq, fft2)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line2, = ax2.plot(freq, fft2, 'green')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
+                    line1, = ax1.plot(freq, fft1, 'red')
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
@@ -270,18 +292,21 @@ def testwithfft():
                 pass
     elif (xaxis == True and yaxis == False and zaxis == False and cvaxis == False):
         ax = fig.add_subplot(111)
-        line, = ax.plot(freq, fft)
+        line, = ax.plot(freq, fft, 'cyan')
         while (xaxis == True and yaxis == False and zaxis == False and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
                 if i == 255:
                     i = 0
                     ax.cla()
-                    line, = ax.plot(freq, fft)
+                    line, = ax.plot(freq, fft, 'cyan')
                     ax.set_ylim([0, 200])
                     ax.set_ylabel("X Axis\nMag FFT")
                     ax.set_xlabel("Frequency [Hz]")
@@ -294,13 +319,16 @@ def testwithfft():
         ax = fig.add_subplot(311)
         ax3 = fig.add_subplot(312)
         ax4 = fig.add_subplot(313)
-        line, = ax.plot(freq, fft)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line, = ax.plot(freq, fft, 'cyan')
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == True and yaxis == False and zaxis == False and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -309,9 +337,9 @@ def testwithfft():
                     ax.cla()
                     ax3.cla()
                     ax4.cla()
-                    line, = ax.plot(freq, fft)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
                     ax4.set_ylim([0, 30])
@@ -331,12 +359,15 @@ def testwithfft():
     elif (xaxis == True and yaxis == False and zaxis == True and cvaxis == False):
         ax = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
-        line, = ax.plot(freq, fft)
-        line2, = ax2.plot(freq, fft2)
+        line, = ax.plot(freq, fft, 'cyan')
+        line2, = ax2.plot(freq, fft2, 'green')
         while (xaxis == True and yaxis == False and zaxis == True and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -344,8 +375,8 @@ def testwithfft():
                     i = 0
                     ax.cla()
                     ax2.cla()
-                    line, = ax.plot(freq, fft)
-                    line2, = ax2.plot(freq, fft2)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line2, = ax2.plot(freq, fft2, 'green')
                     ax.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
                     ax.set_ylabel("X Axis\nMag FFT")
@@ -363,14 +394,17 @@ def testwithfft():
         ax2 = fig.add_subplot(412)
         ax3 = fig.add_subplot(413)
         ax4 = fig.add_subplot(414)
-        line, = ax.plot(freq, fft)
-        line2, = ax2.plot(freq, fft2)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line, = ax.plot(freq, fft, 'cyan')
+        line2, = ax2.plot(freq, fft2, 'green')
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == True and yaxis == False and zaxis == True and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -380,10 +414,10 @@ def testwithfft():
                     ax2.cla()
                     ax3.cla()
                     ax4.cla()
-                    line, = ax.plot(freq, fft)
-                    line2, = ax2.plot(freq, fft2)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line2, = ax2.plot(freq, fft2, 'green')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
@@ -407,12 +441,15 @@ def testwithfft():
     elif (xaxis == True and yaxis == True and zaxis == False and cvaxis == False):
         ax = fig.add_subplot(211)
         ax1 = fig.add_subplot(212)
-        line, = ax.plot(freq, fft)
-        line1, = ax1.plot(freq, fft1)
+        line, = ax.plot(freq, fft,'cyan')
+        line1, = ax1.plot(freq, fft1,'red')
         while (xaxis == True and yaxis == True and zaxis == False and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -420,8 +457,8 @@ def testwithfft():
                     i = 0
                     ax.cla()
                     ax1.cla()
-                    line, = ax.plot(freq, fft)
-                    line1, = ax1.plot(freq, fft1)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line1, = ax1.plot(freq, fft1, 'red')
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
                     ax.set_ylabel("X Axis\nMag FFT")
@@ -439,14 +476,17 @@ def testwithfft():
         ax1 = fig.add_subplot(412)
         ax3 = fig.add_subplot(413)
         ax4 = fig.add_subplot(414)
-        line, = ax.plot(freq, fft)
-        line1, = ax1.plot(freq, fft1)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line, = ax.plot(freq, fft, 'cyan')
+        line1, = ax1.plot(freq, fft1, 'red')
+        line3, = ax3.plot(freq, fft3,'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == True and yaxis == True and zaxis == False and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -456,10 +496,10 @@ def testwithfft():
                     ax1.cla()
                     ax3.cla()
                     ax4.cla()
-                    line, = ax.plot(freq, fft)
-                    line1, = ax1.plot(freq, fft1)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line1, = ax1.plot(freq, fft1, 'red')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
                     ax3.set_ylim([0, 2])
@@ -484,13 +524,16 @@ def testwithfft():
         ax = fig.add_subplot(311)
         ax1 = fig.add_subplot(312)
         ax2 = fig.add_subplot(313)
-        line, = ax.plot(freq, fft)
-        line1, = ax1.plot(freq, fft1)
-        line2, = ax2.plot(freq, fft2)
+        line, = ax.plot(freq, fft, 'cyan')
+        line1, = ax1.plot(freq, fft1, 'red')
+        line2, = ax2.plot(freq, fft2, 'green')
         while (xaxis == True and yaxis == True and zaxis == True and cvaxis == False):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -499,9 +542,9 @@ def testwithfft():
                     ax.cla()
                     ax1.cla()
                     ax2.cla()
-                    line, = ax.plot(freq, fft)
-                    line1, = ax1.plot(freq, fft1)
-                    line2, = ax2.plot(freq, fft2)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line1, = ax1.plot(freq, fft1, 'red')
+                    line2, = ax2.plot(freq, fft2, 'green')
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
@@ -524,15 +567,18 @@ def testwithfft():
         ax2 = fig.add_subplot(513)
         ax3 = fig.add_subplot(514)
         ax4 = fig.add_subplot(515)
-        line, = ax.plot(freq, fft)
-        line1, = ax1.plot(freq, fft1)
-        line2, = ax2.plot(freq, fft2)
-        line3, = ax3.plot(freq, fft3)
-        line4, = ax4.plot(freq, fft4)
+        line, = ax.plot(freq, fft, 'cyan')
+        line1, = ax1.plot(freq, fft1, 'red')
+        line2, = ax2.plot(freq, fft2, 'green')
+        line3, = ax3.plot(freq, fft3, 'magenta')
+        line4, = ax4.plot(freq, fft4, 'limegreen')
         while (xaxis == True and yaxis == True and zaxis == True and cvaxis == True):
             mainwindow.update()
             try:
                 dataplot = soc.recv(55)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    break
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
@@ -543,11 +589,11 @@ def testwithfft():
                     ax2.cla()
                     ax3.cla()
                     ax4.cla()
-                    line, = ax.plot(freq, fft)
-                    line1, = ax1.plot(freq, fft1)
-                    line2, = ax2.plot(freq, fft2)
-                    line3, = ax3.plot(freq, fft3)
-                    line4, = ax4.plot(freq, fft4)
+                    line, = ax.plot(freq, fft, 'cyan')
+                    line1, = ax1.plot(freq, fft1, 'red')
+                    line2, = ax2.plot(freq, fft2, 'green')
+                    line3, = ax3.plot(freq, fft3, 'magenta')
+                    line4, = ax4.plot(freq, fft4, 'limegreen')
                     ax.set_ylim([0, 200])
                     ax1.set_ylim([0, 200])
                     ax2.set_ylim([0, 200])
@@ -596,46 +642,65 @@ def showplottest_clicked():
         ax2.set_ylim([0,6000]) #Zakres rpm na wykresie
         ax3.set_ylim(0,40) #zakres temp na wykresie
         ax4.set_ylim(0,200) #zakres ciag na wykresie
-        line, = ax.plot(xs, ys)
-        line1, = ax1.plot(xs, ys1)
-        line2, = ax2.plot(xs, ys2)
-        line3, = ax3.plot(xs, ys3)
-        line4, = ax4.plot(xs, ys4)
+        line, = ax.plot(xs, ys, 'cyan')
+        line1, = ax1.plot(xs, ys1, 'red')
+        line2, = ax2.plot(xs, ys2, 'green')
+        line3, = ax3.plot(xs, ys3, 'magenta')
+        line4, = ax4.plot(xs, ys4, 'limegreen')
 
         plt.xlabel('Samples')
 
         def animate(i, ys, ys1, ys2, ys3, ys4):
             try:  # sprawdzenie czy socket dostaje dane
                 dataplot = soc.recv(25)
-                a_list = dataplot.split()
-                map_object = map(float, a_list)
-                data_intplot = list(map_object)
-                ys.append(float(data_intplot[0]))
-                ys1.append(float(data_intplot[1]))
-                ys2.append(float(data_intplot[2]))
-                ys3.append(float(data_intplot[3]))
-                ys4.append(float(data_intplot[4]))
-                if reczny == True:
-                    rpmset = scale.get()
-                    rpmsetbyes = "3 " + str(rpmset)
-                    soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
-                if(sensorsread==True):
-                    current.set(str(data_intplot[0]) + str(" [A]"))
-                    voltage.set(str(data_intplot[1]) + str(" [V]"))
-                    rpm.set(str(data_intplot[2]) + str(" [rpm]"))
-                    temp.set(str(data_intplot[3]) + str(" [C]"))
-                    ciag.set(str(data_intplot[4]) + str(" [g]"))
-                ys = ys[-x_len:]
-                ys1 = ys1[-x_len:]
-                ys2 = ys2[-x_len:]
-                ys3 = ys3[-x_len:]
-                ys4 = ys4[-x_len:]
-                line.set_ydata(ys)
-                line1.set_ydata(ys1)
-                line2.set_ydata(ys2)
-                line3.set_ydata(ys3)
-                line4.set_ydata(ys4)
-                return line, line1, line2, line3, line4,
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                    ys.append(float(0))
+                    ys1.append(float(0))
+                    ys2.append(float(0))
+                    ys3.append(float(0))
+                    ys4.append(float(0))
+                    ys = ys[-x_len:]
+                    ys1 = ys1[-x_len:]
+                    ys2 = ys2[-x_len:]
+                    ys3 = ys3[-x_len:]
+                    ys4 = ys4[-x_len:]
+                    line.set_ydata(ys)
+                    line1.set_ydata(ys1)
+                    line2.set_ydata(ys2)
+                    line3.set_ydata(ys3)
+                    line4.set_ydata(ys4)
+                    return line, line1, line2, line3, line4,
+                else:
+                    a_list = dataplot.split()
+                    map_object = map(float, a_list)
+                    data_intplot = list(map_object)
+                    ys.append(float(data_intplot[0]))
+                    ys1.append(float(data_intplot[1]))
+                    ys2.append(float(data_intplot[2]))
+                    ys3.append(float(data_intplot[3]))
+                    ys4.append(float(data_intplot[4]))
+                    if reczny == True:
+                        rpmset = scale.get()
+                        rpmsetbyes = "3 " + str(rpmset)
+                        soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
+                    if(sensorsread==True):
+                        current.set(str(data_intplot[0]) + str(" [A]"))
+                        voltage.set(str(data_intplot[1]) + str(" [V]"))
+                        rpm.set(str(data_intplot[2]) + str(" [rpm]"))
+                        temp.set(str(data_intplot[3]) + str(" [C]"))
+                        ciag.set(str(data_intplot[4]) + str(" [g]"))
+                    ys = ys[-x_len:]
+                    ys1 = ys1[-x_len:]
+                    ys2 = ys2[-x_len:]
+                    ys3 = ys3[-x_len:]
+                    ys4 = ys4[-x_len:]
+                    line.set_ydata(ys)
+                    line1.set_ydata(ys1)
+                    line2.set_ydata(ys2)
+                    line3.set_ydata(ys3)
+                    line4.set_ydata(ys4)
+                    return line, line1, line2, line3, line4,
             except socket.error:  # jezeli socket nie dostaje danych:
                 ys.append(float(0))
                 ys1.append(float(0))
@@ -674,7 +739,15 @@ def showplottest_clicked():
                 rpmsetbyes = "3 " + str(rpmset)
                 soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
                 receivedata()
-            receivedata()
+            else:
+                receivedata()
+    elif(sensorsread==False and dynamicplot==False and reczny==True):
+        while(reczny==True):
+            mainwindow.update()
+            time.sleep(ping)
+            rpmset = scale.get()
+            rpmsetbyes = "3 " + str(rpmset)
+            soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
 def changesensorsvar():
     global sensorsread
     sensorsread = not sensorsread
@@ -700,15 +773,18 @@ def receivedata():
     time.sleep(ping)
     try: #sprawdzenie czy socket dostaje dane
         dataplot = soc.recv(25)
-        print(dataplot)
-        a_list = dataplot.split()
-        map_object = map(float, a_list)
-        data_intplot = list(map_object)
-        current.set(str(data_intplot[0]) + str(" [A]"))
-        voltage.set(str(data_intplot[1]) + str(" [V]"))
-        rpm.set(str(data_intplot[2]) + str(" [rpm]"))
-        temp.set(str(data_intplot[3]) + str(" [C]"))
-        ciag.set(str(data_intplot[4]) +str(" [g]"))
+        if (b'END' in dataplot):
+            stopbutton_clicked()
+        else:
+            print(dataplot)
+            a_list = dataplot.split()
+            map_object = map(float, a_list)
+            data_intplot = list(map_object)
+            current.set(str(data_intplot[0]) + str(" [A]"))
+            voltage.set(str(data_intplot[1]) + str(" [V]"))
+            rpm.set(str(data_intplot[2]) + str(" [rpm]"))
+            temp.set(str(data_intplot[3]) + str(" [C]"))
+            ciag.set(str(data_intplot[4]) +str(" [g]"))
     except socket.error: #jezeli socket nie dostaje danych:
         pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def startreczny_clicked():
@@ -775,7 +851,7 @@ def testbutton_clicked():
     soc.bind((UDP_ip,UDP_port))
     soc.setblocking(0)
     soc.sendto(bytes("2",  "utf-8"), (servIP, servPORT))
-    time.sleep(0.1)
+    time.sleep(0.2)
     try:
         dataplot = soc.recv(2)
         if (dataplot==b'OK'):
