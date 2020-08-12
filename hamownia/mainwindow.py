@@ -7,6 +7,7 @@ import matplotlib.animation as animation
 import styledef
 import time
 import numpy as np
+import json
 
 
 plt.style.use('dark_background')
@@ -20,6 +21,7 @@ sensorsread=False
 cvaxis=False
 dynamicplot=False
 reczny=False
+staticplotv=False
 set_speed = 45
 set_time = 20
 set_rampa = 4
@@ -51,7 +53,6 @@ def testwithfft():
             try:
                 dataplot = soc.recv(55)
                 print(dataplot)
-
                 if (b'END' in dataplot):
                     stopbutton_clicked()
                     break
@@ -768,7 +769,12 @@ def cvaxisbut():
     global cvaxis
     cvaxis = not cvaxis
     return cvaxis
+def static_but1():
+    global staticplotv
+    staticplotv = not staticplotv
+    return staticplotv
 def receivedata():
+    global i
     mainwindow.update()
     time.sleep(ping)
     try: #sprawdzenie czy socket dostaje dane
@@ -827,9 +833,84 @@ def startfftbutton_clicked():
         stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     testwithfft()
+def startstaticbutton_clicked():
+    global set_speed, set_time, soc, set_rampcalc
+    soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.bind((UDP_ip,UDP_port))
+    soc.setblocking(0)
+    if(set_rampcalc<10):
+        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)
+    else:
+        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
+    soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
+    statictest()
+def statictest():
+    global i, set_time
+    numpyvalue = (int(set_time) * 10)
+    empty={}
+    if(staticplotv==True):
+        fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, sharex=True)
+        ax1.set_ylabel("[A]")
+        ax2.set_ylabel("[V]")
+        ax3.set_ylabel("[rpm]")
+        ax4.set_ylabel("[oC]")
+        ax5.set_ylabel("[g]")
+        ax5.set_xlabel("Samples")
+        ax1.set_ylim([0,10]) #Zakres Amper na wykresie
+        ax2.set_ylim([0,15]) #Zakres Voltage na wykresie
+        ax3.set_ylim([0,6000]) #Zakres rpm na wykresie
+        ax4.set_ylim(0,40) #zakres temp na wykresie
+        ax5.set_ylim(0,200) #zakres ciag na wykresie
+        current = np.zeros(numpyvalue, dtype=float)  # prad
+        voltage = np.zeros(numpyvalue, dtype=float) # napiecie
+        predkosc = np.zeros(numpyvalue, dtype=float) # predkosc
+        temp = np.zeros(numpyvalue, dtype=float) #temp
+        ciag = np.zeros(numpyvalue, dtype=float) #ciag
+        samples = np.linspace(0, numpyvalue, num=numpyvalue, endpoint=True)
+    with open(jsonfileloc, 'w') as f:
+        json.dump(empty, f)
+        f.close()
+    while True:
+        mainwindow.update()
+        time.sleep(ping)
+        try: #sprawdzenie czy socket dostaje dane
+            dataplot = soc.recv(25)
+            if (b'END' in dataplot):
+                ax1.plot(samples,current, 'cyan')
+                ax2.plot(samples,voltage, 'red')
+                ax3.plot(samples,predkosc, 'green')
+                ax4.plot(samples,temp, 'magenta')
+                ax5.plot(samples,ciag, 'limegreen')
+                stopbutton_clicked()
+                plt.show()
+                break
+            else:
+                print(dataplot)
+                a_list = dataplot.split()
+                map_object = map(float, a_list)
+                data_intplot = list(map_object)
+                y = {"Numer probki": i,
+                     "Prad:": data_intplot[0],
+                     "Napiecie:": data_intplot[1],
+                     "Predkosc:": data_intplot[2],
+                     "Temperatura:": data_intplot[3],
+                     "Ciag:": data_intplot[4]
+                     }
+                with open(jsonfileloc, 'a') as f:
+                    json.dump(y, f, indent = 2)
+                if(staticplotv==True):
+                    current[i]=data_intplot[0]
+                    voltage[i]= data_intplot[1]
+                    predkosc[i]=data_intplot[2]
+                    temp[i]=data_intplot[3]
+                    ciag[i]=data_intplot[4]
+                i += 1
+        except socket.error: #jezeli socket nie dostaje danych:
+            pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def stopbutton_clicked():
-    global soc, reczny, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1
+    global soc, reczny,i, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1, staticplot, staticplotv
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
+    staticplotv=False
     reczny=False
     xaxis=False
     yaxis=False
@@ -837,12 +918,14 @@ def stopbutton_clicked():
     cvaxis=False
     dynamicplot=False
     sensorsread=False
+    i=0
     dyn.deselect()
     xaxisbut1.deselect()
     yaxisbut1.deselect()
     zaxisbut1.deselect()
     sensbut1.deselect()
     curvolt.deselect()
+    staticplot.deselect()
     soc.close()
     mainwindow.update()
 def testbutton_clicked():
@@ -860,6 +943,11 @@ def testbutton_clicked():
     except:
         tk.messagebox.showerror(title="Connection test", message="STM32 not connected")
         pass
+def jsonnameget():
+    global jsonfileloc, jsonNAME
+    jsonfileloc=jsonNAME.get()
+    tk.messagebox.showinfo(title="Potwierdzenie", message="Dane z testu zostaną zapisane do pliku o nazwie:\n" +jsonfileloc +"\nw folderze głównym projektu.")
+    return jsonfileloc
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
     global mainwindow
@@ -867,57 +955,81 @@ def mainwindowwidget():
     tab_parent = ttk.Notebook(mainwindow, style="TNotebook")
     tab1 = ttk.Frame(tab_parent, style="Frame1.TFrame")
     tab2 = ttk.Frame(tab_parent, style="Frame1.TFrame")
+    tab3 = ttk.Frame(tab_parent, style="Frame1.TFrame")
     tab_parent.add(tab1, text="Hamownia BLDC")
     tab_parent.add(tab2, text="Analiza drgań FFT")
+    tab_parent.add(tab3, text="Statyczny test")
     tab_parent.grid(row=0, column=0)
     styledef.mainwindowstyle()
     mainwindow.title("Praca Inżynierska - Kamil Olszewski, Daniel Świątek")
     mainwindow.configure(bg="#bdc3c7")
     tk.Label(tab1,bg="#bdc3c7", text="Sterowanie hamownią silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2)
     tk.Label(tab2,bg="#bdc3c7", text="        Analiza FFT drgań silników BLDC - Nucelo F7", font=("Helvetica",16, "bold")).grid(row=0,column=2, sticky="NSEW")
+    tk.Label(tab3, bg="#bdc3c7", text="Statyczny test silnika BLDC - Nucelo F7", font=("Helvetica", 16, "bold")).grid(row=0, column=2, sticky="NSEW")
     tk.Label(tab1, text="", bg="#bdc3c7").grid(row=2, column=2)
     tk.Label(tab2, text="", bg="#bdc3c7").grid(row=2, column=2)
+    tk.Label(tab3, text="", bg="#bdc3c7").grid(row=2, column=2)
     tk.Label(tab1,bg="#bdc3c7", text="Serwer STM32  \n Ethernet UDP \n Adres IP:"+ servIP +"\nPort:" + str(servPORT), relief="solid", font=("Arial",8)).grid(row=1, column=0, columnspan=2)
     tk.Label(tab2,bg="#bdc3c7", text="Serwer STM32  \n Ethernet UDP \n Adres IP:"+ servIP +"\nPort:" + str(servPORT), relief="solid", font=("Arial",8)).grid(row=1, column=0, columnspan=2)
+    tk.Label(tab3,bg="#bdc3c7", text="Serwer STM32  \n Ethernet UDP \n Adres IP:"+ servIP +"\nPort:" + str(servPORT), relief="solid", font=("Arial",8)).grid(row=1, column=0, columnspan=2)
     tk.Label(tab1,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
     tk.Label(tab2,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
+    tk.Label(tab3,bg="#bdc3c7", text="Python client \n Ethernet UDP \n Adres IP:"+ UDP_ip +"\nPort:" + str(UDP_port), relief="solid", font=("Arial",8)).grid(row=1, column=5, columnspan=2)
 
     #Konfiguracja przycisków do obsługi stringów wysyłanych do STM32-F7
     global dyn,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1, curvolt
     ttk.Label(tab1, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
     ttk.Label(tab2, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
+    ttk.Label(tab3, text="Sygnały sterujące:", style="BW.TLabel").grid(row=3, column=2)
     putlogo1=tk.PhotoImage(file='putlogo.png')
     tk.Label(tab1, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
     tk.Label(tab2, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
-    ttk.Separator(tab1).grid(row=4, column=0, columnspan=7, ipadx=400)
-    ttk.Separator(tab1).grid(row=10, column=0, columnspan=7, ipadx=400)
-    ttk.Separator(tab2).grid(row=4, column=0, columnspan=7, ipadx=400)
-    ttk.Separator(tab2).grid(row=10, column=0, columnspan=7, ipadx=400)
+    tk.Label(tab3, image=putlogo1, background="#bdc3c7", relief="solid").grid(row=1, column=2)
+    ttk.Separator(tab1).grid(row=4, column=0, columnspan=7, ipadx=410)
+    ttk.Separator(tab1).grid(row=10, column=0, columnspan=7, ipadx=410)
+    ttk.Separator(tab2).grid(row=4, column=0, columnspan=7, ipadx=410)
+    ttk.Separator(tab2).grid(row=10, column=0, columnspan=7, ipadx=410)
+    ttk.Separator(tab3).grid(row=4, column=0, columnspan=7, ipadx=410)
+    ttk.Separator(tab3).grid(row=10, column=0, columnspan=7, ipadx=410)
     ttk.Button(tab1,text="Start BLDC", style="But1.TButton", command=startbutton_clicked).grid(row=5,column=2)
     ttk.Button(tab2,text="Start BLDC", style="But1.TButton", command=startfftbutton_clicked).grid(row=5,column=2)
+    ttk.Button(tab3,text="Start BLDC", style="But1.TButton", command=startstaticbutton_clicked).grid(row=5,column=2)
     dyn=tk.Checkbutton(tab1, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
     dyn.grid(row=11, column=2)
     tk.Checkbutton(tab2, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab3, text="Dynamiczne charakterystyki\n podczas testu",font=("Helvetica",9), command=dynamicplotbox,bg="#bdc3c7", activebackground="#bdc3c7")
     ttk.Button(tab1,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
     ttk.Button(tab2,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
+    ttk.Button(tab3,text="Stop BLDC", style="But4.TButton", command=stopbutton_clicked).grid(row=6,column=2)
     ttk.Button(tab1,text="Test połączenia", style="But6.TButton", command=testbutton_clicked).grid(row=8,column=2)
     ttk.Button(tab2,text="Test połączenia", style="But6.TButton", command=testbutton_clicked).grid(row=8,column=2)
+    ttk.Button(tab3,text="Test połączenia", style="But6.TButton", command=testbutton_clicked).grid(row=8,column=2)
     ttk.Button(tab1,text="Ustawienia", style="But5.TButton", command=opensettings).grid(row=7,column=2)
     ttk.Button(tab2,text="Ustawienia", style="But5.TButton", command=opensettings).grid(row=7,column=2)
+    ttk.Button(tab3,text="Ustawienia", style="But5.TButton", command=opensettings).grid(row=7,column=2)
 
     #Konfiguracja przycisków przechodzenia do okienek od FFT
-    global rpmset, scale, fftBUT
+    global rpmset, scale, fftBUT, jsonNAME
     ttk.Label(tab1, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(tab2, text="Konfiguracja FFT:", style="BW.TLabel").grid(row=3, column=0)
+    ttk.Label(tab3, text="Zapis wart. do pliku:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(tab1, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
     ttk.Label(tab2, text="Wybierz osie do analizy:", style="BW4.TLabel").grid(row=5,column=0)
+    ttk.Label(tab3, text="Nazwa pliku .json:", style="BW4.TLabel").grid(row=5,column=0)
+    jsonNAME=ttk.Entry(tab3, width=15)
+    jsonNAME.grid(row=6, column=0)
+    jsonNAME.insert(0,"testvalues.json")
+    ttk.Button(tab3,text="Zatwierdź", style="But3.TButton", command=jsonnameget).grid(row=7, column=0)
     tk.Checkbutton(tab1, text="X AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
     xaxisbut1=tk.Checkbutton(tab2, text="X AXIS", font=("Helvetica",9),command=xaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
     xaxisbut1.grid(row=6,column=0,pady=4)
+    tk.Checkbutton(tab3, text="X AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab3, text="Y AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
     tk.Checkbutton(tab1, text="Y AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
     yaxisbut1=tk.Checkbutton(tab2, text="Y AXIS", font=("Helvetica",9),command=yaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
     yaxisbut1.grid(row=7, column=0, pady=3)
     tk.Checkbutton(tab1, text="Z AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab3, text="Z AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
     zaxisbut1=tk.Checkbutton(tab2, text="Z AXIS", font=("Helvetica",9),command=zaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
     zaxisbut1.grid(row=8,column=0, pady=3)
     scale=tk.Scale(tab1, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
@@ -929,14 +1041,17 @@ def mainwindowwidget():
     sensbut1=tk.Checkbutton(tab1, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7")
     sensbut1.grid(row=11,column=5,columnspan=2)
     tk.Checkbutton(tab2, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab3, text="Odczytuj wartość sensorów\n podczas testu", font=("Helvetica",9),command=changesensorsvar, bg="#bdc3c7", activebackground="#bdc3c7")
     ttk.Label(tab1,text="Prąd:", style="BW3.TLabel").grid(row=5, column=5, sticky="W")
     ttk.Label(tab1,text="Napięcie:", style="BW3.TLabel").grid(row=6, column=5, sticky="W")
     ttk.Label(tab1,text="Prędkość:", style="BW3.TLabel").grid(row=7, column=5, sticky="W")
     ttk.Label(tab1,text="Temperatura:", style="BW3.TLabel").grid(row=8, column=5, sticky="W")
     ttk.Label(tab1,text="Ciąg:", style="BW3.TLabel").grid(row=9, column=5, sticky="W")
+    tk.Checkbutton(tab3, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=cvaxisbut)
+    curvol=tk.Checkbutton(tab1, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=cvaxisbut)
     curvolt=tk.Checkbutton(tab2, text="Pokaż analizę FFT\n dla prądu i napięcia", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=cvaxisbut)
     curvolt.grid(row=11,column=2)
-    global current, voltage, rpm, temp, ciag
+    global current, voltage, rpm, temp, ciag, staticplot
     current=tk.StringVar()
     voltage=tk.StringVar()
     rpm=tk.StringVar()
@@ -947,6 +1062,10 @@ def mainwindowwidget():
     ttk.Label(tab1, textvariable=rpm, style="BW2.TLabel").grid(row=7, column=6, sticky="E")
     ttk.Label(tab1, textvariable=temp, style="BW2.TLabel").grid(row=8, column=6, sticky="E")
     ttk.Label(tab1, textvariable=ciag, style="BW2.TLabel").grid(row=9, column=6, sticky="E")
+    tk.Checkbutton(tab1, text="Pokaż statyczne wykresy\n po zakończeniu testu", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab2, text="Pokaż statyczne wykresy\n po zakończeniu testu", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    staticplot=tk.Checkbutton(tab3, text="Pokaż statyczne wykresy\n po zakończeniu testu", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=static_but1)
+    staticplot.grid(row=11,column=2)
     mainwindow.resizable(0, 0)
     while True:
         mainwindow.update()
