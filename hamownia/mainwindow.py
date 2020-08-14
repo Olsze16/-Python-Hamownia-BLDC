@@ -32,13 +32,22 @@ rpmset=25
 
 #Private variables END
 def testwithfft():
-    global i
-    fft = np.zeros(255, dtype=float)  # x
-    fft1 = np.zeros(255, dtype=float)  # y
-    fft2 = np.zeros(255, dtype=float)  # z
-    fft3 = np.zeros(255, dtype=float)  # napiecie
-    fft4 = np.zeros(255, dtype=float)  # prad
-    freq = np.linspace(0, 2000, num=255, endpoint=True)
+    global i, warthZscale, RozScaleval
+    if (RozScaleval == 1): rozd = (512/2)-1
+    elif (RozScaleval == 2): rozd = (1024/2)-1
+    elif (RozScaleval == 3): rozd = (2048/2)-1
+    elif (RozScaleval == 4): rozd = (4096/2)-1
+    rozd = int(rozd)
+    fft = np.zeros(rozd, dtype=float)  # x
+    fft1 = np.zeros(rozd, dtype=float)  # y
+    fft2 = np.zeros(rozd, dtype=float)  # z
+    fft3 = np.zeros(rozd, dtype=float)  # napiecie
+    fft4 = np.zeros(rozd, dtype=float)  # prad
+    if(warthZscale==1): freq = np.linspace(0, 1000, num=rozd, endpoint=True)
+    elif(warthZscale==2): freq = np.linspace(0, 2000, num=rozd, endpoint=True)
+    elif(warthZscale==3): freq = np.linspace(0, 2500, num=rozd, endpoint=True)
+    elif(warthZscale==4): freq = np.linspace(0, 4000, num=rozd, endpoint=True)
+    elif(warthZscale==5): freq = np.linspace(0, 5000, num=rozd, endpoint=True)
     plt.ion()
     fig = plt.figure(figsize=(8,8))
     fig.suptitle('Analiza czasowo-częstotliwościowa FFT', fontsize=12)
@@ -59,7 +68,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax3.cla()
                     ax4.cla()
@@ -90,7 +99,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax2.cla()
                     line2, = ax2.plot(freq, fft2, 'green')
@@ -119,7 +128,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax2.cla()
                     ax3.cla()
@@ -156,7 +165,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax1.cla()
                     line1, = ax1.plot(freq, fft1, 'red')
@@ -185,7 +194,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax1.cla()
                     ax3.cla()
@@ -224,7 +233,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax1.cla()
                     ax2.cla()
@@ -261,7 +270,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax1.cla()
                     ax3.cla()
@@ -304,7 +313,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     line, = ax.plot(freq, fft, 'cyan')
@@ -333,7 +342,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax3.cla()
@@ -372,7 +381,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax2.cla()
@@ -409,7 +418,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax2.cla()
@@ -454,7 +463,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax1.cla()
@@ -491,7 +500,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax1.cla()
@@ -538,7 +547,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax1.cla()
@@ -583,7 +592,7 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
-                if i == 255:
+                if i == rozd:
                     i = 0
                     ax.cla()
                     ax1.cla()
@@ -823,14 +832,15 @@ def startbutton_clicked():
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     showplottest_clicked()
 def startfftbutton_clicked():
-    global set_speed, set_time, soc, set_rampcalc
+    global set_speed, set_time, soc, set_rampcalc, warthZscale, RozScaleval
+
     soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     soc.bind((UDP_ip,UDP_port))
     soc.setblocking(0)
     if(set_rampcalc<10):
-        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)
+        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)+" "+str(warthZscale)+" "+str(RozScaleval)
     else:
-        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
+        stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)+" "+str(warthZscale)+" "+str(RozScaleval)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     testwithfft()
 def startstaticbutton_clicked():
@@ -1011,7 +1021,7 @@ def mainwindowwidget():
     #Konfiguracja przycisków przechodzenia do okienek od FFT
     global rpmset, scale, fftBUT, jsonNAME
     ttk.Label(tab1, text="Test ręczny BLDC:", style="BW.TLabel").grid(row=3, column=0)
-    ttk.Label(tab2, text="Konfiguracja FFT:", style="BW.TLabel").grid(row=3, column=0)
+    ttk.Label(tab2, text="Konfiguracja plot:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(tab3, text="Zapis wart. do pliku:", style="BW.TLabel").grid(row=3, column=0)
     ttk.Label(tab1, text="Prędkość zadana [% max]:", style="BW4.TLabel").grid(row=5,column=0)
     ttk.Label(tab2, text="Wybierz osie do analizy:", style="BW4.TLabel").grid(row=5,column=0)
@@ -1032,7 +1042,7 @@ def mainwindowwidget():
     tk.Checkbutton(tab3, text="Z AXIS", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
     zaxisbut1=tk.Checkbutton(tab2, text="Z AXIS", font=("Helvetica",9),command=zaxisbut, bg="#bdc3c7", activebackground="#bdc3c7")
     zaxisbut1.grid(row=8,column=0, pady=3)
-    scale=tk.Scale(tab1, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL)
+    scale=tk.Scale(tab1, from_=25, to=99, resolution=1, orient=tk.HORIZONTAL,  width=12, bg='gray', bd=1,font=("Helvetica",8))
     scale.grid(row=6, column=0)
     ttk.Button(tab1,text="Start ręczny", style="But3.TButton", command=startreczny_clicked).grid(row=7, column=0)
 
@@ -1067,8 +1077,48 @@ def mainwindowwidget():
     staticplot=tk.Checkbutton(tab3, text="Pokaż statyczne wykresy\n po zakończeniu testu", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7", command=static_but1)
     staticplot.grid(row=11,column=2)
     mainwindow.resizable(0, 0)
+
+    ## Dodatkowe v.02
+    global hz, warthZscale, roz, RozScaleval
+    HZScale=tk.Scale(tab2, from_=1, to=5, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    HZScale.grid(row=6, column=5)
+    RozScale=tk.Scale(tab2, from_=1, to=4, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    RozScale.grid(row=8, column=5)
+    warthZscale = HZScale.get()
+    RozScaleval = RozScale.get()
+    if (warthZscale==1):hz=2
+    elif (warthZscale==2):hz=4
+    elif (warthZscale==3):hz=5
+    elif (warthZscale==4):hz=8
+    elif (warthZscale==5):hz=10
+    if (RozScaleval==1):roz=512
+    elif (RozScaleval==2):roz=1024
+    elif (RozScaleval==3):roz=2048
+    elif (RozScaleval==4):roz=4096
+    ttk.Label(tab2, text="Ustawienia FFT:", style="BW.TLabel").grid(row=3, column=5)
+    czstring=tk.StringVar()
+    czstring.set("Próbkowanie:\n" +str(hz) +" [kHz]")
+    cz=ttk.Label(tab2,textvariable=czstring, style="BW4.TLabel")
+    cz.grid(row=5, column=5)
+    rozstring=tk.StringVar()
+    rozstring.set("Rozdzielczość:\n" +str(roz) +" [samples]")
+    rozl=ttk.Label(tab2,textvariable=rozstring, style="BW4.TLabel")
+    rozl.grid(row=7, column=5)
     while True:
         mainwindow.update()
+        warthZscale = HZScale.get()
+        RozScaleval = RozScale.get()
+        if (warthZscale == 1):hz = 2
+        elif (warthZscale == 2):hz = 4
+        elif (warthZscale == 3):hz = 5
+        elif (warthZscale == 4):hz = 8
+        elif (warthZscale == 5):hz = 10
+        if (RozScaleval == 1):roz = 512
+        elif (RozScaleval == 2):roz = 1024
+        elif (RozScaleval == 3):roz = 2048
+        elif (RozScaleval == 4):roz = 4096
+        czstring.set("Próbkowanie:" + str(hz) + " [kHz]")
+        rozstring.set("Rozdzielczość:\n" + str(roz) + " [samples]")
 def welcomewindowwidget():
     global entryIP, entryport, welcomewindow, servIP, servPORT
     welcomewindow = tk.Tk()
@@ -1098,8 +1148,6 @@ def welcomewindowwidget():
     entryport.grid(row=4,column=1)
     entryport.insert(0,"20001")
     ttk.Button(welcomewindow,style="But1.TButton", text="connect",command=connectbutton_clicked).grid(row=7, column=0, columnspan=2)
-
-
     #Authors
     ttk.Label(welcomewindow, style="BW1.TLabel", text="Autorzy pracy:").grid(row=8,column=1, sticky="E")
     ttk.Label(welcomewindow, style="BW1.TLabel", text="Kamil Olszewski (133657)").grid(row=9, column=1, sticky="E")
