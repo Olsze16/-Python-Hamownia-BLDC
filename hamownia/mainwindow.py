@@ -13,6 +13,7 @@ import json
 plt.style.use('dark_background')
 #Private variables
 i=0
+j=0
 data_int=[]
 xaxis=False
 yaxis=False
@@ -22,6 +23,7 @@ cvaxis=False
 dynamicplot=False
 reczny=False
 staticplotv=False
+jsonwriteyn=False
 set_speed = 45
 set_time = 20
 set_rampa = 4
@@ -32,7 +34,7 @@ rpmset=25
 
 #Private variables END
 def testwithfft():
-    global i, warthZscale, RozScaleval
+    global i, warthZscale, RozScaleval,j
     if (RozScaleval == 1): rozd = (512/2)-1
     elif (RozScaleval == 2): rozd = (1024/2)-1
     elif (RozScaleval == 3): rozd = (2048/2)-1
@@ -68,8 +70,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax3.cla()
                     ax4.cla()
                     line3, = ax3.plot(freq, fft3, 'magenta')
@@ -99,8 +104,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax2.cla()
                     line2, = ax2.plot(freq, fft2, 'green')
                     ax2.set_ylim([0, 200])
@@ -128,8 +136,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax2.cla()
                     ax3.cla()
                     ax4.cla()
@@ -165,8 +176,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax1.cla()
                     line1, = ax1.plot(freq, fft1, 'red')
                     ax1.set_ylim([0, 200])
@@ -194,8 +208,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax1.cla()
                     ax3.cla()
                     ax4.cla()
@@ -233,8 +250,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax1.cla()
                     ax2.cla()
                     line2, = ax2.plot(freq, fft2, 'green')
@@ -270,8 +290,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax1.cla()
                     ax3.cla()
                     ax4.cla()
@@ -313,8 +336,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     line, = ax.plot(freq, fft, 'cyan')
                     ax.set_ylim([0, 200])
@@ -342,8 +368,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax3.cla()
                     ax4.cla()
@@ -381,8 +410,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax2.cla()
                     line, = ax.plot(freq, fft, 'cyan')
@@ -418,8 +450,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax2.cla()
                     ax3.cla()
@@ -463,8 +498,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax1.cla()
                     line, = ax.plot(freq, fft, 'cyan')
@@ -500,8 +538,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax1.cla()
                     ax3.cla()
@@ -547,8 +588,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax1.cla()
                     ax2.cla()
@@ -592,8 +636,11 @@ def testwithfft():
                 a_list = dataplot.split()
                 map_object = map(float, a_list)
                 data_intplot = list(map_object)
+                if(jsonwriteyn==True):
+                    jsonfftwrite(j,i,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                 if i == rozd:
                     i = 0
+                    j+=1
                     ax.cla()
                     ax1.cla()
                     ax2.cla()
@@ -633,6 +680,7 @@ def dynamicplotbox():
     dynamicplot = not dynamicplot
     return dynamicplot
 def showplottest_clicked():
+    global j
     if (dynamicplot==True):
         x_len = 200  # Number of points to display
         fig1, (ax,ax1, ax2, ax3, ax4) = plt.subplots(nrows=5, sharex=True)
@@ -661,6 +709,7 @@ def showplottest_clicked():
         plt.xlabel('Samples')
 
         def animate(i, ys, ys1, ys2, ys3, ys4):
+            global j
             try:  # sprawdzenie czy socket dostaje dane
                 dataplot = soc.recv(25)
                 if (b'END' in dataplot):
@@ -690,6 +739,8 @@ def showplottest_clicked():
                     ys2.append(float(data_intplot[2]))
                     ys3.append(float(data_intplot[3]))
                     ys4.append(float(data_intplot[4]))
+                    if(jsonwriteyn==True):
+                        jsonwrite(j,data_intplot[0],data_intplot[1],data_intplot[2],data_intplot[3],data_intplot[4])
                     if reczny == True:
                         rpmset = scale.get()
                         rpmsetbyes = "3 " + str(rpmset)
@@ -710,6 +761,7 @@ def showplottest_clicked():
                     line2.set_ydata(ys2)
                     line3.set_ydata(ys3)
                     line4.set_ydata(ys4)
+                    j+=1
                     return line, line1, line2, line3, line4,
             except socket.error:  # jezeli socket nie dostaje danych:
                 ys.append(float(0))
@@ -751,13 +803,50 @@ def showplottest_clicked():
                 receivedata()
             else:
                 receivedata()
-    elif(sensorsread==False and dynamicplot==False and reczny==True):
+    elif(sensorsread==False and dynamicplot==False and reczny==True and jsonwriteyn==False):
         while(reczny==True):
             mainwindow.update()
             time.sleep(ping)
             rpmset = scale.get()
             rpmsetbyes = "3 " + str(rpmset)
             soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
+    elif(sensorsread==False and dynamicplot==False and reczny==False and jsonwriteyn==True):
+        while(jsonwriteyn==True):
+            mainwindow.update()
+            time.sleep(ping)
+            try:
+                dataplot = soc.recv(25)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                else:
+                    print(dataplot)
+                    a_list = dataplot.split()
+                    map_object = map(float, a_list)
+                    data_intplot = list(map_object)
+                    jsonwrite(j, data_intplot[0], data_intplot[1], data_intplot[2], data_intplot[3], data_intplot[4])
+                    j+=1
+            except socket.error:  # jezeli socket nie dostaje danych:
+                pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
+    elif(sensorsread==False and dynamicplot==False and reczny==True and jsonwriteyn==True):
+        while(reczny==True):
+            mainwindow.update()
+            time.sleep(ping)
+            rpmset = scale.get()
+            rpmsetbyes = "3 " + str(rpmset)
+            soc.sendto(bytes(rpmsetbyes, "utf-8"), (servIP, servPORT))
+            try:
+                dataplot = soc.recv(25)
+                if (b'END' in dataplot):
+                    stopbutton_clicked()
+                else:
+                    print(dataplot)
+                    a_list = dataplot.split()
+                    map_object = map(float, a_list)
+                    data_intplot = list(map_object)
+                    jsonwrite(j, data_intplot[0], data_intplot[1], data_intplot[2], data_intplot[3], data_intplot[4])
+                    j+=1
+            except socket.error:  # jezeli socket nie dostaje danych:
+                pass  # zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def changesensorsvar():
     global sensorsread
     sensorsread = not sensorsread
@@ -782,8 +871,12 @@ def static_but1():
     global staticplotv
     staticplotv = not staticplotv
     return staticplotv
+def jsonwritevar():
+    global jsonwriteyn
+    jsonwriteyn = not jsonwriteyn
+    return jsonwriteyn
 def receivedata():
-    global i
+    global i,j
     mainwindow.update()
     time.sleep(ping)
     try: #sprawdzenie czy socket dostaje dane
@@ -800,6 +893,9 @@ def receivedata():
             rpm.set(str(data_intplot[2]) + str(" [rpm]"))
             temp.set(str(data_intplot[3]) + str(" [C]"))
             ciag.set(str(data_intplot[4]) +str(" [g]"))
+            if (jsonwriteyn == True):
+                jsonwrite(j, data_intplot[0], data_intplot[1], data_intplot[2], data_intplot[3], data_intplot[4])
+                j+=1
     except socket.error: #jezeli socket nie dostaje danych:
         pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def startreczny_clicked():
@@ -811,6 +907,7 @@ def startreczny_clicked():
     rpmset = scale.get()
     rpmsetbyes = "3 " + str(rpmset)
     soc.sendto(bytes(rpmsetbyes, "utf-8"),(servIP, servPORT))
+    jsonclear()
     showplottest_clicked()
 def connectbutton_clicked():
     global UDP_ip, UDP_port, soc, servIP, servPORT
@@ -830,6 +927,7 @@ def startbutton_clicked():
     else:
         stringinbytes = "1 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
+    jsonclear()
     showplottest_clicked()
 def startfftbutton_clicked():
     global set_speed, set_time, soc, set_rampcalc, warthZscale, RozScaleval
@@ -842,21 +940,22 @@ def startfftbutton_clicked():
     else:
         stringinbytes = "4 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)+" "+str(warthZscale)+" "+str(RozScaleval)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
+    jsonfftclear()
     testwithfft()
 def startstaticbutton_clicked():
-    global set_speed, set_time, soc, set_rampcalc
+    global set_speed, set_time, soc, set_rampcalc, warthZscale2
     soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     soc.bind((UDP_ip,UDP_port))
     soc.setblocking(0)
     if(set_rampcalc<10):
-        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)
+        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" 0"+str(set_rampcalc)+" "+str(warthZscale2)
     else:
-        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)
+        stringinbytes = "5 "+ str(set_speed)+" "+str(set_time)+" "+str(set_rampcalc)+" "+str(warthZscale2)
     soc.sendto(bytes(stringinbytes,  "utf-8"), (servIP, servPORT))
     statictest()
 def statictest():
-    global i, set_time
-    numpyvalue = (int(set_time) * 10)
+    global i, set_time, hz2
+    numpyvalue = (int(set_time) * (hz2*1000))
     empty={}
     if(staticplotv==True):
         fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, sharex=True)
@@ -884,15 +983,17 @@ def statictest():
         mainwindow.update()
         time.sleep(ping)
         try: #sprawdzenie czy socket dostaje dane
-            dataplot = soc.recv(25)
+            dataplot = soc.recv(55)
             if (b'END' in dataplot):
-                ax1.plot(samples,current, 'cyan')
-                ax2.plot(samples,voltage, 'red')
-                ax3.plot(samples,predkosc, 'green')
-                ax4.plot(samples,temp, 'magenta')
-                ax5.plot(samples,ciag, 'limegreen')
+                if(staticplotv==True):
+                    ax1.plot(samples,current, 'cyan')
+                    ax2.plot(samples,voltage, 'red')
+                    ax3.plot(samples,predkosc, 'green')
+                    ax4.plot(samples,temp, 'magenta')
+                    ax5.plot(samples,ciag, 'limegreen')
                 stopbutton_clicked()
-                plt.show()
+                if(staticplotv==True):
+                    plt.show()
                 break
             else:
                 print(dataplot)
@@ -904,7 +1005,12 @@ def statictest():
                      "Napiecie:": data_intplot[1],
                      "Predkosc:": data_intplot[2],
                      "Temperatura:": data_intplot[3],
-                     "Ciag:": data_intplot[4]
+                     "Ciag:": data_intplot[4],
+                     "Akcelerometr oś X:": data_intplot[5],
+                     "Akcelerometr oś Y:": data_intplot[6],
+                     "Akcelerometr oś Z:": data_intplot[7],
+                     "Czas od próbki n-1:": data_intplot[8],
+                     "Numer próbki STM32:": data_intplot[9]
                      }
                 with open(jsonfileloc, 'a') as f:
                     json.dump(y, f, indent = 2)
@@ -918,7 +1024,7 @@ def statictest():
         except socket.error: #jezeli socket nie dostaje danych:
             pass #zwolnienie programu w momencie, kiedy socket nie dostaje danych
 def stopbutton_clicked():
-    global soc, reczny,i, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1, staticplot, staticplotv
+    global soc, reczny,i,j, xaxis, zaxis, yaxis, cvaxis, dynamicplot, sensorsread,dyn,curvolt,xaxisbut1,zaxisbut1,yaxisbut1, sensbut1, staticplot, staticplotv, jsonwriteyn, jsonbuttontab1
     soc.sendto(bytes("0",  "utf-8"), (servIP, servPORT))
     staticplotv=False
     reczny=False
@@ -928,7 +1034,10 @@ def stopbutton_clicked():
     cvaxis=False
     dynamicplot=False
     sensorsread=False
+    jsonwriteyn=False
     i=0
+    j=0
+    jsonbuttontab1.deselect()
     dyn.deselect()
     xaxisbut1.deselect()
     yaxisbut1.deselect()
@@ -958,6 +1067,37 @@ def jsonnameget():
     jsonfileloc=jsonNAME.get()
     tk.messagebox.showinfo(title="Potwierdzenie", message="Dane z testu zostaną zapisane do pliku o nazwie:\n" +jsonfileloc +"\nw folderze głównym projektu.")
     return jsonfileloc
+def jsonwrite(i,a1,a2,a3,a4,a5):
+    y = {"Numer probki": i,
+         "Prad:": a1,
+         "Napiecie:": a2,
+         "Predkosc:": a3,
+         "Temperatura:": a4,
+         "Ciag:": a5,
+         }
+    with open('test.json', 'a') as f:
+        json.dump(y, f, indent=2)
+def jsonclear():
+    empty={}
+    with open('test.json', 'w') as f:
+        json.dump(empty, f)
+        f.close()
+def jsonfftwrite(j,i,a1,a2,a3,a4,a5):
+    y = {"FFT_Tab:": j,
+        "Numer probki:": i,
+         "Ax": a1,
+         "Ay": a2,
+         "Az": a3,
+         "Napiecie": a4,
+         "Prad": a5,
+         }
+    with open('testfft.json', 'a') as f:
+        json.dump(y, f, indent=2)
+def jsonfftclear():
+    empty={}
+    with open('testfft.json', 'w') as f:
+        json.dump(empty, f)
+        f.close()
 def mainwindowwidget():
     #Definicja wyglądu mainwindow
     global mainwindow
@@ -1079,18 +1219,26 @@ def mainwindowwidget():
     mainwindow.resizable(0, 0)
 
     ## Dodatkowe v.02
-    global hz, warthZscale, roz, RozScaleval
+    global hz, warthZscale, roz, RozScaleval, warthZscale2, hz2
     HZScale=tk.Scale(tab2, from_=1, to=5, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
     HZScale.grid(row=6, column=5)
+    HZScale5=tk.Scale(tab3, from_=1, to=5, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    HZScale5.grid(row=6, column=5)
     RozScale=tk.Scale(tab2, from_=1, to=4, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
     RozScale.grid(row=8, column=5)
     warthZscale = HZScale.get()
+    warthZscale2 = HZScale5.get()
     RozScaleval = RozScale.get()
     if (warthZscale==1):hz=2
     elif (warthZscale==2):hz=4
     elif (warthZscale==3):hz=5
     elif (warthZscale==4):hz=8
     elif (warthZscale==5):hz=10
+    if (warthZscale2==1):hz2=2
+    elif (warthZscale2==2):hz2=4
+    elif (warthZscale2==3):hz2=5
+    elif (warthZscale2==4):hz2=8
+    elif (warthZscale2==5):hz2=10
     if (RozScaleval==1):roz=512
     elif (RozScaleval==2):roz=1024
     elif (RozScaleval==3):roz=2048
@@ -1100,24 +1248,44 @@ def mainwindowwidget():
     czstring.set("Próbkowanie:\n" +str(hz) +" [kHz]")
     cz=ttk.Label(tab2,textvariable=czstring, style="BW4.TLabel")
     cz.grid(row=5, column=5)
+    ttk.Label(tab3, text="Ustawienia:", style="BW.TLabel").grid(row=3, column=5)
+    czstring2=tk.StringVar()
+    czstring2.set("Próbkowanie:\n" +str(hz2) +" [kHz]")
+    cz2=ttk.Label(tab3,textvariable=czstring2, style="BW4.TLabel")
+    cz2.grid(row=5, column=5)
     rozstring=tk.StringVar()
     rozstring.set("Rozdzielczość:\n" +str(roz) +" [samples]")
     rozl=ttk.Label(tab2,textvariable=rozstring, style="BW4.TLabel")
     rozl.grid(row=7, column=5)
+
+    ## Dodatkowe v.03
+    global jsonbuttontab1
+    jsonbuttontab1=tk.Checkbutton(tab1, text="Zapisz dane z testu do\n pliku .JSON (test.json)",command=jsonwritevar, font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    jsonbuttontab2=tk.Checkbutton(tab2, text="Zapisz dane z testu do\n pliku .JSON (testfft.json)",command=jsonwritevar, font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    tk.Checkbutton(tab3, text="Zapisz dane z testu do\n pliku .JSON (test.json)", font=("Helvetica",9), bg="#bdc3c7", activebackground="#bdc3c7")
+    jsonbuttontab1.grid(row=11,column=0)
+    jsonbuttontab2.grid(row=11,column=0)
     while True:
         mainwindow.update()
         warthZscale = HZScale.get()
         RozScaleval = RozScale.get()
+        warthZscale2 = HZScale5.get()
         if (warthZscale == 1):hz = 2
         elif (warthZscale == 2):hz = 4
         elif (warthZscale == 3):hz = 5
         elif (warthZscale == 4):hz = 8
         elif (warthZscale == 5):hz = 10
+        if (warthZscale2 == 1):hz2 = 2
+        elif (warthZscale2 == 2):hz2 = 4
+        elif (warthZscale2 == 3):hz2 = 5
+        elif (warthZscale2 == 4):hz2 = 8
+        elif (warthZscale2 == 5):hz2 = 10
         if (RozScaleval == 1):roz = 512
         elif (RozScaleval == 2):roz = 1024
         elif (RozScaleval == 3):roz = 2048
         elif (RozScaleval == 4):roz = 4096
         czstring.set("Próbkowanie:" + str(hz) + " [kHz]")
+        czstring2.set("Próbkowanie:" + str(hz2) + " [kHz]")
         rozstring.set("Rozdzielczość:\n" + str(roz) + " [samples]")
 def welcomewindowwidget():
     global entryIP, entryport, welcomewindow, servIP, servPORT
