@@ -910,13 +910,13 @@ def startreczny_clicked():
     jsonclear()
     showplottest_clicked()
 def connectbutton_clicked():
-    global UDP_ip, UDP_port, soc, servIP, servPORT
-    UDP_ip=entryIP.get()
-    UDP_port=int(entryport.get())
-    servIP=servIP.get()
-    servPORT=int(servPORT.get())
-    welcomewindow.destroy()
-    mainwindowwidget()
+    global UDP_ip, UDP_port, servIP, servPORT #deklaracja zmiennych globalnych
+    servIP=servIP.get() #przypisanie tekstu(IP) do zmiennej servIP
+    servPORT=int(servPORT.get()) #przypisanie tekstu(PORT) do zmiennej servPORT
+    UDP_ip=entryIP.get() #przypisanie tekstu(IP) do zmiennej UDP_ip
+    UDP_port=int(entryport.get()) #przypisanie tekstu(PORT) do zmiennej UDP_port
+    welcomewindow.destroy() #zamknięcie okna powitalnego
+    mainwindowwidget() #otwarcie okna głównego
 def startbutton_clicked():
     global set_speed, set_time, soc, set_rampcalc
     soc=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -1220,29 +1220,25 @@ def mainwindowwidget():
 
     ## Dodatkowe v.02
     global hz, warthZscale, roz, RozScaleval, warthZscale2, hz2
-    HZScale=tk.Scale(tab2, from_=1, to=5, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    HZScale=tk.Scale(tab2, from_=1, to=4, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
     HZScale.grid(row=6, column=5)
-    HZScale5=tk.Scale(tab3, from_=1, to=5, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    HZScale5=tk.Scale(tab3, from_=1, to=4, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
     HZScale5.grid(row=6, column=5)
-    RozScale=tk.Scale(tab2, from_=1, to=4, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
+    RozScale=tk.Scale(tab2, from_=1, to=2, resolution=1, orient=tk.HORIZONTAL, width=12, bg='gray', bd=1,font=("Helvetica",8))
     RozScale.grid(row=8, column=5)
     warthZscale = HZScale.get()
     warthZscale2 = HZScale5.get()
     RozScaleval = RozScale.get()
-    if (warthZscale==1):hz=2
-    elif (warthZscale==2):hz=4
-    elif (warthZscale==3):hz=5
-    elif (warthZscale==4):hz=8
-    elif (warthZscale==5):hz=10
-    if (warthZscale2==1):hz2=2
-    elif (warthZscale2==2):hz2=4
-    elif (warthZscale2==3):hz2=5
-    elif (warthZscale2==4):hz2=8
-    elif (warthZscale2==5):hz2=10
+    if (warthZscale==1):hz=4
+    elif (warthZscale==2):hz=6
+    elif (warthZscale==3):hz=8
+    elif (warthZscale==4):hz=12
+    if (warthZscale2==1):hz2=4
+    elif (warthZscale2==2):hz2=6
+    elif (warthZscale2==3):hz2=8
+    elif (warthZscale2==4):hz2=12
     if (RozScaleval==1):roz=512
-    elif (RozScaleval==2):roz=1024
-    elif (RozScaleval==3):roz=2048
-    elif (RozScaleval==4):roz=4096
+    elif (RozScaleval==2):roz=2048
     ttk.Label(tab2, text="Ustawienia FFT:", style="BW.TLabel").grid(row=3, column=5)
     czstring=tk.StringVar()
     czstring.set("Próbkowanie:\n" +str(hz) +" [kHz]")
@@ -1270,20 +1266,16 @@ def mainwindowwidget():
         warthZscale = HZScale.get()
         RozScaleval = RozScale.get()
         warthZscale2 = HZScale5.get()
-        if (warthZscale == 1):hz = 2
-        elif (warthZscale == 2):hz = 4
-        elif (warthZscale == 3):hz = 5
-        elif (warthZscale == 4):hz = 8
-        elif (warthZscale == 5):hz = 10
-        if (warthZscale2 == 1):hz2 = 2
-        elif (warthZscale2 == 2):hz2 = 4
-        elif (warthZscale2 == 3):hz2 = 5
-        elif (warthZscale2 == 4):hz2 = 8
-        elif (warthZscale2 == 5):hz2 = 10
+        if (warthZscale == 1):hz = 4
+        elif (warthZscale == 2):hz = 6
+        elif (warthZscale == 3):hz = 8
+        elif (warthZscale == 4):hz = 12
+        if (warthZscale2 == 1):hz2 = 4
+        elif (warthZscale2 == 2):hz2 = 6
+        elif (warthZscale2 == 3):hz2 = 8
+        elif (warthZscale2 == 4):hz2 = 12
         if (RozScaleval == 1):roz = 512
-        elif (RozScaleval == 2):roz = 1024
-        elif (RozScaleval == 3):roz = 2048
-        elif (RozScaleval == 4):roz = 4096
+        elif (RozScaleval == 2):roz = 2048
         czstring.set("Próbkowanie:" + str(hz) + " [kHz]")
         czstring2.set("Próbkowanie:" + str(hz2) + " [kHz]")
         rozstring.set("Rozdzielczość:\n" + str(roz) + " [samples]")
